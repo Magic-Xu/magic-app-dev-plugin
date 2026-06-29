@@ -1,0 +1,6 @@
+interface:
+  display_name: "GitHub PR Mainline Release"
+  short_description: "Merge accepted GitHub PRs back to main safely"
+  default_prompt: "Use $github-pr-mainline-release after the accepted feature should be merged to the repository mainline branch."
+policy:
+  allow_implicit_invocation: true

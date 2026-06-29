@@ -1,0 +1,7 @@
+interface:
+  display_name: "Android Architecture Guardrails"
+  short_description: "Keep Android app code modular and maintainable"
+  default_prompt: "Use $android-app-architecture-guardrails to review and improve this Android change before implementation."
+
+policy:
+  allow_implicit_invocation: true
