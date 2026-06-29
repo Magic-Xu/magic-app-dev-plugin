@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Instrumentation QA Guardrails"
+  short_description: "Reliable Android UI test startup and validation"
+  default_prompt: "Use $android-instrumentation-qa-guardrails to validate Android app UI flows without relying on manual app launches."
