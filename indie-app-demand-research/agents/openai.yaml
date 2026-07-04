@@ -1,0 +1,4 @@
+interface:
+  display_name: "Indie App Demand Research"
+  short_description: "Find paid demand before building indie apps"
+  default_prompt: "Use $indie-app-demand-research to research and rank local-first indie app directions from real demand signals."

@@ -23,6 +23,7 @@
 | `android-app-architecture-guardrails` | 约束 Android app 架构：MVI contract、Compose 纯渲染、资源化、设计 token、文件大小和验证门禁。 |
 | `android-instrumentation-qa-guardrails` | 用可复现的 adb/instrumentation 证据验证 Android 真机/模拟器 UI 流程，避免人工启动造成假阳性。 |
 | `github-pr-mainline-release` | 在功能验收后推送分支、创建或复用 PR、等待 GitHub Actions CI、安全合并并恢复本地 mainline。 |
+| `indie-app-demand-research` | 从真实需求信号调研和排序独立 app 方向，并用本地优先、低运营成本约束做筛选。 |
 | `local-first-android-app-builder` | 围绕最小 V1 闭环、本地优先、明确非目标、MVI/pulse/Compose 边界、隐私和验证来启动 Android app。 |
 
 ## 本地安装

@@ -23,6 +23,7 @@ Do not add project notes, one-off PRDs, product copy, brand assets, or app-speci
 | `android-app-architecture-guardrails` | Keep Android app code modular: MVI contracts, Compose purity, resources, design tokens, file-size checks, and validation gates. |
 | `android-instrumentation-qa-guardrails` | Validate Android connected-device UI flows with reproducible adb/instrumentation evidence instead of manual launches. |
 | `github-pr-mainline-release` | Push an accepted feature branch, create or reuse a PR, wait for GitHub Actions CI, merge safely, and restore local mainline. |
+| `indie-app-demand-research` | Research and rank indie app opportunities from real demand signals before building, with a local-first and low-ops filter. |
 | `local-first-android-app-builder` | Bootstrap a focused local-first Android app around a small V1 loop, clear non-goals, MVI/pulse/Compose boundaries, privacy, and validation. |
 
 ## Local Install
