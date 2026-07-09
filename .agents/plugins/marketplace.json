@@ -1,0 +1,20 @@
+{
+  "name": "magic-app-dev",
+  "interface": {
+    "displayName": "Magic App Dev"
+  },
+  "plugins": [
+    {
+      "name": "magic-app-dev",
+      "source": {
+        "source": "local",
+        "path": "./plugins/magic-app-dev"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

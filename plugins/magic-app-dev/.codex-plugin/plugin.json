@@ -1,0 +1,38 @@
+{
+  "name": "magic-app-dev",
+  "version": "0.1.0",
+  "description": "Reusable Codex skills for independent app development.",
+  "author": {
+    "name": "Magic Xu",
+    "url": "https://github.com/Magic-Xu"
+  },
+  "homepage": "https://github.com/Magic-Xu/app-dev-skills",
+  "repository": "https://github.com/Magic-Xu/app-dev-skills",
+  "keywords": [
+    "codex",
+    "skills",
+    "android",
+    "indie-apps",
+    "app-development"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Magic App Dev",
+    "shortDescription": "Independent app development workflows for Codex.",
+    "longDescription": "Magic App Dev packages reusable Codex skills for independent app development: demand research, local-first Android app building, architecture guardrails, instrumentation QA, change self-checks, end-to-end delivery, and mainline PR release workflows.",
+    "developerName": "Magic Xu",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills",
+      "App Development",
+      "Android",
+      "GitHub"
+    ],
+    "defaultPrompt": [
+      "Use Magic App Dev to plan a local-first Android app.",
+      "Review this Android change with app architecture guardrails.",
+      "Run an app change self-check before handoff."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

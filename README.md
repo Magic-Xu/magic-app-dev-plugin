@@ -1,66 +1,79 @@
-# App Development Skills
+# Magic App Dev
 
 English | [简体中文](README.zh-CN.md)
 
-Reusable Codex skills extracted from app development work. The skills in this repository should stay product-agnostic: they may encode strong engineering workflows, but they must not depend on one app's name, package, repository, screenshots, store listing, or release history.
+Magic App Dev is a personal Codex plugin that packages reusable skills from independent app development work. The plugin is intentionally product-agnostic: it captures workflows, guardrails, and validation habits, not facts from one specific app.
 
-## Skill Selection Criteria
+## Install
 
-A skill belongs here only when it is:
+Add this GitHub repository as a Codex plugin marketplace:
 
-- reusable across multiple apps
-- specific enough to change agent behavior
-- small enough to load without wasting context
-- free of app-specific product facts
-- backed by a repeated workflow or a real failure mode
+```bash
+codex plugin marketplace add Magic-Xu/app-dev-skills --ref main
+codex plugin add magic-app-dev@magic-app-dev
+```
 
-Do not add project notes, one-off PRDs, product copy, brand assets, or app-specific release checklists as skills.
+After updating the repository later, refresh the marketplace snapshot and reinstall the plugin:
 
-## Skills
+```bash
+codex plugin marketplace upgrade magic-app-dev
+codex plugin add magic-app-dev@magic-app-dev
+```
+
+Start a new Codex thread after reinstalling so newly updated skills are loaded.
+
+For local development from a checkout:
+
+```bash
+codex plugin marketplace add .
+codex plugin add magic-app-dev@magic-app-dev
+```
+
+## Included Skills
 
 | Skill | Purpose |
 | --- | --- |
-| `android-app-architecture-guardrails` | Keep Android app code modular: MVI contracts, Compose purity, resources, design tokens, file-size checks, and validation gates. |
-| `android-instrumentation-qa-guardrails` | Validate Android connected-device UI flows with reproducible adb/instrumentation evidence instead of manual launches. |
+| `indie-app-demand-research` | Research and rank indie app opportunities from real demand signals before building. |
+| `local-first-android-app-builder` | Start or review focused local-first Android apps around a small V1 loop, MVI boundaries, privacy, and validation. |
+| `android-app-architecture-guardrails` | Keep Android app code modular through MVI contracts, Compose purity, resources, design tokens, file-size checks, and validation gates. |
+| `android-instrumentation-qa-guardrails` | Validate Android UI flows with reproducible adb/instrumentation evidence instead of manual launches. |
 | `app-change-self-check` | Self-check app changes before handoff with repository rules, risk-based validation, static rescans, and explicit residual risks. |
-| `github-pr-mainline-release` | Push an accepted feature branch, create or reuse a PR, wait for GitHub Actions CI, merge safely, and restore local mainline. |
-| `indie-app-demand-research` | Research and rank indie app opportunities from real demand signals before building, with a local-first and low-ops filter. |
-| `local-first-android-app-builder` | Bootstrap a focused local-first Android app around a small V1 loop, clear non-goals, MVI/pulse/Compose boundaries, privacy, and validation. |
-
-## Local Install
-
-Install a skill globally by linking or copying its folder into:
-
-```bash
-~/.codex/skills/
-```
-
-Example:
-
-```bash
-ln -s /path/to/app-dev-skills/android-app-architecture-guardrails ~/.codex/skills/android-app-architecture-guardrails
-```
-
-This repository is intended to be the source of truth; global installs can point back to folders in this repo.
+| `app-end-to-end-delivery` | Implement, validate, package, and hand off an app feature or bug fix end to end. |
+| `github-pr-mainline-release` | Push accepted work, create or reuse a PR, wait for CI, merge safely, and restore local mainline. |
 
 ## Repository Layout
 
-Each skill lives at the repository root:
-
 ```text
-skill-name/
-├── SKILL.md
-├── agents/
-│   └── openai.yaml
-└── references/      # optional
+.agents/
+└── plugins/
+    └── marketplace.json
+plugins/
+└── magic-app-dev/
+    ├── .codex-plugin/
+    │   └── plugin.json
+    └── skills/
+        └── <skill-name>/
+            ├── SKILL.md
+            ├── agents/
+            │   └── openai.yaml
+            └── references/      # optional
 ```
 
-Keep `SKILL.md` concise. Put task-specific detail in `references/` only when it should be loaded conditionally.
+The source of truth for every skill is under `plugins/magic-app-dev/skills/`.
 
-## Maintenance Rules
+## Maintenance
 
-- Keep frontmatter `name` equal to the folder name.
-- Keep descriptions broad enough to trigger correctly, but not so broad that unrelated tasks load the skill.
-- Keep `agents/openai.yaml` default prompts aligned with the skill name.
-- Remove app names, package names, repository names, private URLs, and release-only details before committing.
-- Validate a new or changed skill before publishing.
+- Keep each skill directory name equal to its `SKILL.md` frontmatter `name`.
+- Keep skills reusable across apps; do not add app names, package names, private URLs, screenshots, store listings, or one-off release facts.
+- Keep `SKILL.md` concise. Move conditional detail into `references/`.
+- Update `plugins/magic-app-dev/.codex-plugin/plugin.json` when the plugin metadata or version changes.
+- Validate before publishing:
+
+```bash
+python3 /path/to/plugin-creator/scripts/validate_plugin.py plugins/magic-app-dev
+python3 /path/to/skill-creator/scripts/quick_validate.py plugins/magic-app-dev/skills/<skill-name>
+```
+
+## Scope
+
+This plugin is for independent app development workflows. It is not a place for project notes, app-specific PRDs, product copy, brand assets, secrets, or deployment credentials.

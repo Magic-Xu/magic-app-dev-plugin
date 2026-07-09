@@ -1,66 +1,79 @@
-# App Development Skills
+# Magic App Dev
 
 [English](README.md) | 简体中文
 
-这个仓库用于沉淀从 app 开发过程中提炼出来的可复用 Codex skills。这里的 skill 必须保持产品无关：可以沉淀强工程流程，但不能依赖某个具体 app 的名称、包名、仓库、截图、商店文案或发布历史。
+Magic App Dev 是一个个人 Codex 插件，用来打包你在独立 app 开发中沉淀的可复用 skills。它的目标不是记录某个具体 app 的事实，而是沉淀工作流、工程约束和验证习惯。
 
-## Skill 收录标准
+## 安装
 
-只有满足这些条件，才适合放进这个仓库：
+把这个 GitHub 仓库添加为 Codex plugin marketplace：
 
-- 能在多个 app 之间复用
-- 足够具体，能改变 agent 的实际行为
-- 足够精简，不浪费上下文
-- 不包含具体 app 的产品事实
-- 来自重复工作流或真实踩坑
+```bash
+codex plugin marketplace add Magic-Xu/app-dev-skills --ref main
+codex plugin add magic-app-dev@magic-app-dev
+```
 
-不要把项目笔记、一次性 PRD、产品文案、品牌资产或某个 app 专属发布清单做成 skill。
+以后仓库更新后，刷新 marketplace 快照并重新安装插件：
 
-## Skills
+```bash
+codex plugin marketplace upgrade magic-app-dev
+codex plugin add magic-app-dev@magic-app-dev
+```
+
+重新安装后，开启一个新的 Codex 线程来加载更新后的 skills。
+
+本地开发时，也可以在仓库 checkout 中直接安装：
+
+```bash
+codex plugin marketplace add .
+codex plugin add magic-app-dev@magic-app-dev
+```
+
+## 包含的 Skills
 
 | Skill | 用途 |
 | --- | --- |
+| `indie-app-demand-research` | 从真实需求信号调研和排序独立 app 方向，避免从想法或技术栈倒推产品。 |
+| `local-first-android-app-builder` | 围绕最小 V1 闭环、本地优先、MVI 边界、隐私和验证来启动或审查 Android app。 |
 | `android-app-architecture-guardrails` | 约束 Android app 架构：MVI contract、Compose 纯渲染、资源化、设计 token、文件大小和验证门禁。 |
-| `android-instrumentation-qa-guardrails` | 用可复现的 adb/instrumentation 证据验证 Android 真机/模拟器 UI 流程，避免人工启动造成假阳性。 |
+| `android-instrumentation-qa-guardrails` | 用可复现的 adb/instrumentation 证据验证 Android UI 流程，避免人工启动造成假阳性。 |
 | `app-change-self-check` | 在交付前按仓库规则、风险分层验证、静态复扫和剩余风险说明来做 app 改动自检。 |
-| `github-pr-mainline-release` | 在功能验收后推送分支、创建或复用 PR、等待 GitHub Actions CI、安全合并并恢复本地 mainline。 |
-| `indie-app-demand-research` | 从真实需求信号调研和排序独立 app 方向，并用本地优先、低运营成本约束做筛选。 |
-| `local-first-android-app-builder` | 围绕最小 V1 闭环、本地优先、明确非目标、MVI/pulse/Compose 边界、隐私和验证来启动 Android app。 |
-
-## 本地安装
-
-把需要的 skill 复制或软链到：
-
-```bash
-~/.codex/skills/
-```
-
-示例：
-
-```bash
-ln -s /path/to/app-dev-skills/android-app-architecture-guardrails ~/.codex/skills/android-app-architecture-guardrails
-```
-
-这个仓库作为 source of truth；全局安装可以直接指向本仓库里的 skill 目录。
+| `app-end-to-end-delivery` | 端到端实现、验证、打包和交付 app feature 或 bug fix。 |
+| `github-pr-mainline-release` | 在功能验收后推送分支、创建或复用 PR、等待 CI、安全合并并恢复本地 mainline。 |
 
 ## 仓库结构
 
-每个 skill 位于仓库根目录：
-
 ```text
-skill-name/
-├── SKILL.md
-├── agents/
-│   └── openai.yaml
-└── references/      # 可选
+.agents/
+└── plugins/
+    └── marketplace.json
+plugins/
+└── magic-app-dev/
+    ├── .codex-plugin/
+    │   └── plugin.json
+    └── skills/
+        └── <skill-name>/
+            ├── SKILL.md
+            ├── agents/
+            │   └── openai.yaml
+            └── references/      # 可选
 ```
 
-`SKILL.md` 要保持精简。只有需要按任务条件加载的细节，才放进 `references/`。
+所有 skill 的唯一源码都在 `plugins/magic-app-dev/skills/`。
 
 ## 维护规则
 
-- frontmatter 的 `name` 必须等于目录名。
-- description 要足够准确，能正确触发，但不能宽到污染无关任务。
-- `agents/openai.yaml` 的 default prompt 要和 skill 名保持一致。
-- 提交前移除 app 名称、包名、仓库名、私有链接和发布专属细节。
-- 新增或修改 skill 后要做校验。
+- skill 目录名必须等于 `SKILL.md` frontmatter 里的 `name`。
+- skill 必须能跨 app 复用；不要加入 app 名、包名、私有链接、截图、商店文案或一次性发布事实。
+- `SKILL.md` 保持精简。需要按任务条件加载的细节放进 `references/`。
+- 插件元信息或版本变化时，更新 `plugins/magic-app-dev/.codex-plugin/plugin.json`。
+- 发布前验证：
+
+```bash
+python3 /path/to/plugin-creator/scripts/validate_plugin.py plugins/magic-app-dev
+python3 /path/to/skill-creator/scripts/quick_validate.py plugins/magic-app-dev/skills/<skill-name>
+```
+
+## 边界
+
+这个插件只放独立 app 开发工作流。不要放项目笔记、一次性 PRD、产品文案、品牌资产、密钥或部署凭证。
