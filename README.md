@@ -6,28 +6,39 @@ Magic App Dev is a personal Codex plugin that packages reusable skills from inde
 
 ## Install
 
-Add this GitHub repository as a Codex plugin marketplace:
+For normal use, install directly from the GitHub marketplace. You do not need to clone the repository.
 
 ```bash
 codex plugin marketplace add Magic-Xu/magic-app-dev-plugin --ref main
 codex plugin add magic-app-dev@magic-app-dev-plugin
 ```
 
-After updating the repository later, refresh the marketplace snapshot and reinstall the plugin:
+Start a new Codex thread after installing so the plugin skills are loaded.
+
+## Update
+
+The plugin does not update automatically when this GitHub repository changes. Refresh the marketplace snapshot and reinstall the plugin:
 
 ```bash
 codex plugin marketplace upgrade magic-app-dev-plugin
 codex plugin add magic-app-dev@magic-app-dev-plugin
 ```
 
-Start a new Codex thread after reinstalling so newly updated skills are loaded.
+Start a new Codex thread after reinstalling so updated skills are loaded.
 
-For local development from a checkout:
+## Develop From A Local Checkout
+
+Clone the repository only when you want to inspect the source, edit skills, fork it, or contribute changes.
 
 ```bash
+git clone https://github.com/Magic-Xu/magic-app-dev-plugin.git
+cd magic-app-dev-plugin
+
 codex plugin marketplace add .
 codex plugin add magic-app-dev@magic-app-dev-plugin
 ```
+
+The source of truth for the skills is `plugins/magic-app-dev/skills/`.
 
 ## Included Skills
 
@@ -58,8 +69,6 @@ plugins/
             │   └── openai.yaml
             └── references/      # optional
 ```
-
-The source of truth for every skill is under `plugins/magic-app-dev/skills/`.
 
 ## Maintenance
 

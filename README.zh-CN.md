@@ -6,14 +6,18 @@ Magic App Dev 是一个个人 Codex 插件，用来打包你在独立 app 开发
 
 ## 安装
 
-把这个 GitHub 仓库添加为 Codex plugin marketplace：
+普通使用者直接从 GitHub marketplace 安装，不需要先 clone 仓库。
 
 ```bash
 codex plugin marketplace add Magic-Xu/magic-app-dev-plugin --ref main
 codex plugin add magic-app-dev@magic-app-dev-plugin
 ```
 
-以后仓库更新后，刷新 marketplace 快照并重新安装插件：
+安装后开启一个新的 Codex 线程，让插件里的 skills 生效。
+
+## 更新
+
+这个插件不会在 GitHub 仓库更新后自动升级。需要手动刷新 marketplace 快照并重新安装插件：
 
 ```bash
 codex plugin marketplace upgrade magic-app-dev-plugin
@@ -22,12 +26,19 @@ codex plugin add magic-app-dev@magic-app-dev-plugin
 
 重新安装后，开启一个新的 Codex 线程来加载更新后的 skills。
 
-本地开发时，也可以在仓库 checkout 中直接安装：
+## 从本地 Checkout 开发
+
+只有在你想查看源码、修改 skill、fork 或贡献改动时，才需要 clone 仓库。
 
 ```bash
+git clone https://github.com/Magic-Xu/magic-app-dev-plugin.git
+cd magic-app-dev-plugin
+
 codex plugin marketplace add .
 codex plugin add magic-app-dev@magic-app-dev-plugin
 ```
+
+所有 skill 的唯一源码都在 `plugins/magic-app-dev/skills/`。
 
 ## 包含的 Skills
 
@@ -58,8 +69,6 @@ plugins/
             │   └── openai.yaml
             └── references/      # 可选
 ```
-
-所有 skill 的唯一源码都在 `plugins/magic-app-dev/skills/`。
 
 ## 维护规则
 
