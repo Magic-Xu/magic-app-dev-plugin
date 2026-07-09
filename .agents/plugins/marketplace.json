@@ -1,7 +1,7 @@
 {
-  "name": "magic-app-dev",
+  "name": "magic-app-dev-plugin",
   "interface": {
-    "displayName": "Magic App Dev"
+    "displayName": "Magic App Dev Plugin"
   },
   "plugins": [
     {

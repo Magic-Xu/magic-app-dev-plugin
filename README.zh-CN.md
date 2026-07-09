@@ -9,15 +9,15 @@ Magic App Dev 是一个个人 Codex 插件，用来打包你在独立 app 开发
 把这个 GitHub 仓库添加为 Codex plugin marketplace：
 
 ```bash
-codex plugin marketplace add Magic-Xu/app-dev-skills --ref main
-codex plugin add magic-app-dev@magic-app-dev
+codex plugin marketplace add Magic-Xu/magic-app-dev-plugin --ref main
+codex plugin add magic-app-dev@magic-app-dev-plugin
 ```
 
 以后仓库更新后，刷新 marketplace 快照并重新安装插件：
 
 ```bash
-codex plugin marketplace upgrade magic-app-dev
-codex plugin add magic-app-dev@magic-app-dev
+codex plugin marketplace upgrade magic-app-dev-plugin
+codex plugin add magic-app-dev@magic-app-dev-plugin
 ```
 
 重新安装后，开启一个新的 Codex 线程来加载更新后的 skills。
@@ -26,7 +26,7 @@ codex plugin add magic-app-dev@magic-app-dev
 
 ```bash
 codex plugin marketplace add .
-codex plugin add magic-app-dev@magic-app-dev
+codex plugin add magic-app-dev@magic-app-dev-plugin
 ```
 
 ## 包含的 Skills
