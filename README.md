@@ -46,7 +46,7 @@ Skill source lives in `plugins/magic-app-dev/skills/`.
 | `android-instrumentation-qa-guardrails` | Validate Android UI flows with reproducible adb/instrumentation evidence. |
 | `app-change-self-check` | Check app changes before handoff with concrete validation evidence. |
 | `app-end-to-end-delivery` | Implement, validate, package, and hand off app features or bug fixes. |
-| `github-pr-mainline-release` | Push accepted work, open or reuse a PR, wait for CI, merge, and restore mainline. |
+| `github-pr-mainline-release` | Push accepted work, open or reuse a PR, apply the configured-CI or no-CI validation gate, squash merge when appropriate, clean up the source branch, and restore mainline. |
 
 ## Layout
 

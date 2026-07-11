@@ -46,7 +46,7 @@ Skill 源码位于 `plugins/magic-app-dev/skills/`。
 | `android-instrumentation-qa-guardrails` | 用可复现的 adb/instrumentation 证据验证 Android UI 流程。 |
 | `app-change-self-check` | 交付前用具体证据检查 app 改动。 |
 | `app-end-to-end-delivery` | 端到端实现、验证、打包和交付 app feature 或 bug fix。 |
-| `github-pr-mainline-release` | 推送已验收改动、创建或复用 PR、等待 CI、合并并恢复 mainline。 |
+| `github-pr-mainline-release` | 推送已验收改动、创建或复用 PR，按有 CI/无 CI 路径验证，在适用时 squash 合并、清理源分支并恢复 mainline。 |
 
 ## 结构
 
