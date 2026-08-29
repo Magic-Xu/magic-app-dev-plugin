@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Magic App Dev",
     "shortDescription": "Independent app development workflows for Codex.",
-    "longDescription": "Magic App Dev packages reusable Codex skills for independent app development: demand research, local-first Android app building, architecture guardrails, instrumentation QA, change self-checks, end-to-end delivery, and mainline PR release workflows.",
+    "longDescription": "Magic App Dev packages reusable Codex skills for independent app development: demand research, paired Android and legal-site workspace creation, local-first Android app building, architecture guardrails, long-running Android device setup, instrumentation QA, change self-checks, end-to-end delivery, and mainline PR release workflows.",
     "developerName": "Magic Xu",
     "category": "Productivity",
     "capabilities": [
@@ -30,7 +30,9 @@
     ],
     "defaultPrompt": [
       "Use Magic App Dev to plan a local-first Android app.",
+      "Create a paired Android and public legal-site workspace for a new app.",
       "Review this Android change with app architecture guardrails.",
+      "Keep my connected Android device awake during a long development task.",
       "Run an app change self-check before handoff."
     ],
     "brandColor": "#2563EB"
