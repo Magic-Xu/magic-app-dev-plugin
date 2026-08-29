@@ -1,0 +1,6 @@
+interface:
+  display_name: "Android Device Keep Awake"
+  short_description: "Keep an ADB device awake during long development"
+  default_prompt: "Use $android-device-keep-awake to keep my connected Android device awake throughout this development task."
+policy:
+  allow_implicit_invocation: false

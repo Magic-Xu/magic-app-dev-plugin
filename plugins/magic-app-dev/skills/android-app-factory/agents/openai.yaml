@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android App Factory"
+  short_description: "Create paired Android and legal-site repositories"
+  default_prompt: "Use $android-app-factory to create a new Android app workspace with a private app repository and public legal-site repository."

@@ -2,7 +2,7 @@
 
 [English](README.md) | 简体中文
 
-Magic App Dev 是一个用于 app 开发工作流的 Codex 插件，覆盖选题验证、本地优先 Android 开发、架构审查、设备 QA、改动自检、交付和 GitHub 发布流程。
+Magic App Dev 是一个用于 app 开发工作流的 Codex 插件，覆盖选题验证、Android/法律站点双仓工作区创建、本地优先 Android 开发、架构审查、Android 真机准备与 QA、改动自检、交付和 GitHub 发布流程。
 
 ## 安装
 
@@ -41,8 +41,10 @@ Skill 源码位于 `plugins/magic-app-dev/skills/`。
 | Skill | 用途 |
 | --- | --- |
 | `indie-app-demand-research` | 从真实需求信号调研和排序 app 机会。 |
+| `android-app-factory` | 创建私有 Android 仓库与公开 GitHub Pages 法律站点仓库组成的双仓工作区。 |
 | `local-first-android-app-builder` | 规划、启动或审查本地优先 Android app。 |
 | `android-app-architecture-guardrails` | 约束 Android 代码的 MVI、Compose、资源和验证门禁。 |
+| `android-device-keep-awake` | 在明确指定的长程开发任务中，按实际供电类型让一台已连接 Android 真机持续亮屏。 |
 | `android-instrumentation-qa-guardrails` | 用可复现的 adb/instrumentation 证据验证 Android UI 流程。 |
 | `app-change-self-check` | 交付前用具体证据检查 app 改动。 |
 | `app-end-to-end-delivery` | 端到端实现、验证、打包和交付 app feature 或 bug fix。 |
@@ -63,5 +65,6 @@ plugins/
             ├── SKILL.md
             ├── agents/
             │   └── openai.yaml
+            ├── scripts/
             └── references/
 ```
