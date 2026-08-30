@@ -2,7 +2,7 @@
 
 English | [简体中文](README.zh-CN.md)
 
-Magic App Dev is a Codex plugin for app development workflows: idea validation, paired Android/legal workspace creation, local-first Android development, architecture review, Android device setup and QA, change self-checks, delivery, and GitHub release work.
+Magic App Dev is a Codex plugin for independent app development workflows: idea validation, product and stability analytics, paired Android/legal workspace creation, local-first Android development, architecture review, Android device setup and QA, change self-checks, delivery, and GitHub release work.
 
 ## Install
 
@@ -41,6 +41,8 @@ Skill source lives in `plugins/magic-app-dev/skills/`.
 | Skill | Purpose |
 | --- | --- |
 | `indie-app-demand-research` | Research and rank app opportunities from real demand signals. |
+| `app-product-analytics` | Analyze live acquisition, installed audience, activity, retention, product funnels, monetization, store conversion, and top-level quality. |
+| `app-stability-analysis` | Diagnose live crashes, non-fatal errors, ANRs, regressions, and release stability with Firebase Crashlytics and app-store quality data. |
 | `android-app-factory` | Create a paired private-ready Android repository and public-ready GitHub Pages legal repository. |
 | `local-first-android-app-builder` | Plan, bootstrap, or review focused local-first Android apps. |
 | `android-app-architecture-guardrails` | Keep Android code modular across MVI, Compose, resources, and validation gates. |

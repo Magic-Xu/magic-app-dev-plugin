@@ -2,7 +2,7 @@
 
 [English](README.md) | 简体中文
 
-Magic App Dev 是一个用于 app 开发工作流的 Codex 插件，覆盖选题验证、Android/法律站点双仓工作区创建、本地优先 Android 开发、架构审查、Android 真机准备与 QA、改动自检、交付和 GitHub 发布流程。
+Magic App Dev 是一个用于独立 app 开发工作流的 Codex 插件，覆盖选题验证、产品与稳定性数据分析、Android/法律站点双仓工作区创建、本地优先 Android 开发、架构审查、Android 真机准备与 QA、改动自检、交付和 GitHub 发布流程。
 
 ## 安装
 
@@ -41,6 +41,8 @@ Skill 源码位于 `plugins/magic-app-dev/skills/`。
 | Skill | 用途 |
 | --- | --- |
 | `indie-app-demand-research` | 从真实需求信号调研和排序 app 机会。 |
+| `app-product-analytics` | 分析真实的获客、当前安装用户、活跃、留存、产品漏斗、变现、商店转化和顶层质量数据。 |
+| `app-stability-analysis` | 使用 Firebase Crashlytics 和应用商店质量数据诊断 Crash、非致命错误、ANR、回归与版本稳定性。 |
 | `android-app-factory` | 创建私有 Android 仓库与公开 GitHub Pages 法律站点仓库组成的双仓工作区。 |
 | `local-first-android-app-builder` | 规划、启动或审查本地优先 Android app。 |
 | `android-app-architecture-guardrails` | 约束 Android 代码的 MVI、Compose、资源和验证门禁。 |
