@@ -66,6 +66,19 @@ Read [references/stability-metrics.md](references/stability-metrics.md) before a
 
 If no issue is visible, say “no issue observed in the inspected population and window,” not “the app has no crashes.”
 
+## Required Lark Delivery
+
+For every completed analysis based on live console data or app data supplied by the user, create one new Lark document. Do not create a document for a conceptual stability explanation or a clarification that does not produce a new analysis.
+
+1. Finalize the evidence, verdict, and actions before document creation. Then apply `lark-doc` and create the document with `lark-cli docs +create --as user`. Title it `<App> 稳定性分析｜<analysis end date>` or use the reader's language.
+2. Write for the product owner who must make a release or investigation decision. Use plain language, put the verdict in a top callout, organize the rest under a small number of clear headings, keep exact values and definitions in compact tables, and avoid walls of text. Explain technical terms only when they change the decision.
+3. Include the required report shape above. Add only decision-relevant visuals: quantitative charts for material trends, release comparisons, or issue concentration; a flow diagram when the affected user journey explains severity. Keep the exact supporting values in a table and do not add decorative charts.
+4. Create exactly one document for the analysis. If rendering, verification, or review finds a problem, update that same document instead of creating a replacement.
+5. Fetch the completed document with full content and block IDs, inspect its structure and rendering, then apply `artifact-boundary-review` to the document. Remove stale hypotheses, failed-attempt narration, duplicated verdicts, filler, and unsupported root-cause claims. Preserve source, scope, freshness, coverage caveats, unavailable-data reasons, and evidence needed to judge the result.
+6. Update the same document with any review fixes and fetch it again to verify the final state. In the final chat response, give the short verdict and the Lark document URL; do not duplicate the full report in chat.
+
+If `lark-cli`, user authentication, document permission, or document verification is blocked, state the exact blocker. Do not silently downgrade the required deliverable to a chat-only report or claim that the document was delivered.
+
 ## Hard Boundaries
 
 - Do not treat “no data” or a privacy-threshold blank as zero crashes.
