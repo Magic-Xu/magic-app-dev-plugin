@@ -236,7 +236,13 @@ plugins {{
 dependencyResolutionManagement {{
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {{
-        google()
+        google {{
+            content {{
+                includeGroupByRegex("com\\\\.android.*")
+                includeGroupByRegex("com\\\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }}
+        }}
         mavenCentral()
     }}
 }}
@@ -560,7 +566,8 @@ def app_agents(android_locales: Iterable[str]) -> str:
 - UI uses Jetpack Compose.
 - Page state uses MVI and pulse.
 - Define XxxContract, XxxState, XxxIntent, XxxEffect, typed XxxMutation, and XxxViewModel before page behavior.
-- Every screen owns its feature Store. The app Store owns routes and app-level coordination only; it must not absorb feature state.
+- Every independent page named `XxxScreen` owns an `XxxContract` and `XxxViewModel`. Subordinate loading, empty, error, and section visuals use `XxxContent` or `XxxComponent` instead of `Screen`.
+- The app Store owns routes and app-level coordination only; it must not absorb feature state.
 - Keep the dependency direction `app -> feature -> domain -> core`. Features must not depend on app or sibling features.
 - Magic Android Platform quality rules are mandatory and cannot be disabled or relaxed.
 - Composables render state and dispatch intents. Keep business rules, navigation decisions, system calls, file IO, and network IO outside Composables.
@@ -699,9 +706,10 @@ The starter begins with one Gradle application module and package boundaries:
 - "core": business-independent platform, storage, network, UI, and design-system capabilities.
 
 Dependency direction is `app -> feature -> domain -> core`. A feature cannot import app or a sibling
-feature. Each screen has its own Contract, ViewModel, and Screen; an app-level Store is never a
-container for feature state. Platform quality checks enforce these rules, locale parity, package
-paths, and the 400-line production Kotlin limit without consumer exemptions.
+feature. Each independent page named `XxxScreen` has its own `XxxContract` and `XxxViewModel`;
+subordinate loading, empty, error, and section visuals use `XxxContent` or `XxxComponent`. An
+app-level Store is never a container for feature state. Platform quality checks enforce these rules,
+locale parity, package paths, and the 400-line production Kotlin limit without consumer exemptions.
 
 Split Gradle modules only when build speed, ownership, reuse, or enforceable dependency boundaries justify the added cost.
 """

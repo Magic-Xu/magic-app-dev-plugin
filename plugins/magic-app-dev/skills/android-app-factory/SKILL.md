@@ -77,7 +77,8 @@ Read [references/generated-layout.md](references/generated-layout.md) when chang
 - The Android app passes `check`, `:app:assembleDebug`, `:app:assembleRelease`, and `:app:bundleRelease`.
 - The app uses the released Magic Android Platform Application, Compose, Pulse, and Quality plugins at one pinned version.
 - The app uses Pulse 0.4 feature-owned Stores with State, UI Intent, Effect, typed Mutation, reducer, and ViewModel boundaries.
-- Platform quality checks are mandatory: consumers cannot disable dependency, MVI, locale, package-path, or 400-line file-size rules.
+- Only independent pages use the `XxxScreen` name and page contract; subordinate visual states use `XxxContent` or `XxxComponent`.
+- Platform quality checks are mandatory: consumers cannot disable dependency, feature-UI platform boundary, MVI, locale, package-path, or 400-line file-size rules.
 - User-visible Android strings exist in every generated Android locale.
 - The public repository contains no private app source or secrets.
 - Root English legal URLs and localized English and Simplified Chinese URLs exist.

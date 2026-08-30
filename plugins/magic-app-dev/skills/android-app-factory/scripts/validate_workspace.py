@@ -158,6 +158,47 @@ def validate_public_boundary(app_root: Path, legal_root: Path) -> None:
             raise ValidationError(f"public legal file drifted from canonical source: {relative}")
 
 
+def gradle_block(source: str, name: str) -> str:
+    start = source.find(name)
+    if start < 0:
+        raise ValidationError(f"missing Gradle block: {name}")
+    opening = source.find("{", start + len(name))
+    if opening < 0:
+        raise ValidationError(f"missing opening brace for Gradle block: {name}")
+
+    depth = 0
+    for index in range(opening, len(source)):
+        character = source[index]
+        if character == "{":
+            depth += 1
+        elif character == "}":
+            depth -= 1
+            if depth == 0:
+                return source[opening + 1 : index]
+    raise ValidationError(f"unclosed Gradle block: {name}")
+
+
+def validate_google_repository_filters(settings: str) -> None:
+    required_groups = (
+        'includeGroupByRegex("com\\\\.android.*")',
+        'includeGroupByRegex("com\\\\.google.*")',
+        'includeGroupByRegex("androidx.*")',
+    )
+    for section_name in ("pluginManagement", "dependencyResolutionManagement"):
+        section = gradle_block(settings, section_name)
+        if "google()" in section:
+            raise ValidationError(
+                f"{section_name} must not use an unfiltered Google repository"
+            )
+        google_repository = gradle_block(section, "google")
+        content_filter = gradle_block(google_repository, "content")
+        for group in required_groups:
+            if group not in content_filter:
+                raise ValidationError(
+                    f"{section_name} Google repository filter is missing: {group}"
+                )
+
+
 def main() -> int:
     try:
         args = parse_args()
@@ -218,6 +259,9 @@ def main() -> int:
             require_file(legal_root / relative)
 
         validate_public_boundary(app_root, legal_root)
+
+        settings = (app_root / "settings.gradle.kts").read_text(encoding="utf-8")
+        validate_google_repository_filters(settings)
 
         app_build = (app_root / "app" / "build.gradle.kts").read_text(
             encoding="utf-8"
