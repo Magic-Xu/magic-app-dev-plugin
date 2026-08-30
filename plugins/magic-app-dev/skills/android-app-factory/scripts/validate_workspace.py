@@ -25,6 +25,15 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Run structural and Git checks without invoking Gradle.",
     )
+    parser.add_argument(
+        "--platform-source",
+        help="Use a local Magic Android Platform composite only for Factory acceptance validation.",
+    )
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="Use only already-cached Gradle dependencies during validation.",
+    )
     return parser.parse_args()
 
 
@@ -85,6 +94,9 @@ def gradle_environment() -> tuple[dict[str, str], str]:
             Path("/Applications/Android Studio Preview.app/Contents/jbr/Contents/Home"),
             Path.home() / "android-studio" / "jbr",
         ]
+    )
+    candidates.extend(
+        sorted((Path.home() / ".gradle" / "jdks").glob("*/*/Contents/Home"))
     )
 
     checked: set[Path] = set()
@@ -160,6 +172,8 @@ def main() -> int:
             )
         spec_path = candidates[0]
         spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        if spec.get("schemaVersion") != 2:
+            raise ValidationError("unsupported Factory spec schema; expected version 2")
         app_root = spec_path.parents[1]
         legal_root = workspace / spec["repositories"]["legal"]
         application_id = spec["app"]["applicationId"]
@@ -175,9 +189,10 @@ def main() -> int:
             "app/src/main/AndroidManifest.xml",
             f"app/src/main/java/{package_path}/MainActivity.kt",
             f"app/src/main/java/{package_path}/feature/home/contract/HomeContract.kt",
-            f"app/src/main/java/{package_path}/feature/home/presentation/HomeReducer.kt",
+            f"app/src/main/java/{package_path}/feature/home/presentation/HomeMutation.kt",
             f"app/src/main/java/{package_path}/feature/home/presentation/HomeViewModel.kt",
             f"app/src/main/java/{package_path}/feature/home/ui/HomeScreen.kt",
+            f"app/src/test/java/{package_path}/feature/home/presentation/HomeMutationReducerTest.kt",
             "docs/legal-source/privacy-policy.html",
             "docs/legal-source/user-agreement.html",
             "scripts/sync_legal_site.py",
@@ -207,8 +222,32 @@ def main() -> int:
         app_build = (app_root / "app" / "build.gradle.kts").read_text(
             encoding="utf-8"
         )
-        if "pulse.mvi.platform.android.compose" not in app_build:
-            raise ValidationError("pulse Compose dependency is missing")
+        root_build = (app_root / "build.gradle.kts").read_text(encoding="utf-8")
+        required_plugins = (
+            "io.github.magic-xu.magic-android-application",
+            "io.github.magic-xu.magic-android-compose",
+            "io.github.magic-xu.magic-android-pulse",
+            "io.github.magic-xu.magic-android-quality",
+        )
+        for plugin_id in required_plugins:
+            if plugin_id not in root_build or plugin_id not in app_build:
+                raise ValidationError(f"required platform plugin is missing: {plugin_id}")
+        platform = spec.get("platform", {})
+        platform_version = platform.get("version")
+        if not isinstance(platform_version, str) or not re.fullmatch(
+            r"[1-9][0-9]*\.[0-9]+\.[0-9]+", platform_version
+        ):
+            raise ValidationError("spec must pin a released stable platform x.y.z version")
+        if platform.get("qualityPolicy") != "mandatory":
+            raise ValidationError("platform quality policy must be mandatory")
+        if f'version "{platform_version}"' not in root_build:
+            raise ValidationError("root plugin versions do not match the Factory spec")
+        if "magicQuality" in app_build or "magicQuality" in root_build:
+            raise ValidationError("generated apps cannot configure quality-rule exemptions")
+        if "com.android.application" in app_build or "org.jetbrains.kotlin" in app_build:
+            raise ValidationError("app bypasses the shared platform build baseline")
+        if "io.github.magic-xu:mvi-" in app_build:
+            raise ValidationError("app bypasses the platform-owned Pulse baseline")
         forbidden_dependencies = ("firebase", "play-services-ads", "mlkit")
         for dependency in forbidden_dependencies:
             if dependency in app_build.lower():
@@ -252,8 +291,26 @@ def main() -> int:
         java_home = None
         if not args.skip_build:
             environment, java_home = gradle_environment()
+            gradle_command = ["./gradlew"]
+            if args.offline:
+                gradle_command.append("--offline")
+            if args.platform_source:
+                platform_source = Path(args.platform_source).expanduser().resolve()
+                if not (platform_source / "settings.gradle.kts").is_file():
+                    raise ValidationError(
+                        f"invalid Magic Android Platform source: {platform_source}"
+                    )
+                gradle_command.extend(["--include-build", str(platform_source)])
+            gradle_command.extend(
+                [
+                    "check",
+                    ":app:assembleDebug",
+                    ":app:assembleRelease",
+                    ":app:bundleRelease",
+                ]
+            )
             run(
-                ["./gradlew", ":app:testDebugUnitTest", ":app:assembleDebug"],
+                gradle_command,
                 cwd=app_root,
                 env=environment,
             )
