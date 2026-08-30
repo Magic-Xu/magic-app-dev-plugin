@@ -35,6 +35,12 @@ The Factory selects its tested stable Magic Android Platform version by default.
 user to choose a version during normal app creation. Use `--magic-platform-version` only when the
 request explicitly requires testing another already-published stable version.
 
+Before advancing the Factory default, manually run the repository's `Android App Factory`
+workflow with the published candidate in `magic_platform_version`. This validates a newly generated
+workspace without changing the current default. Only after that run succeeds, update the default
+version in a separate change; pull-request CI then repeats the full generation and build against the
+new default.
+
 If a product sentence cannot be derived without inventing the app's purpose, stop and ask. Repository names and the standard locale set may use the defaults unless the user says otherwise.
 
 ## Workflow
