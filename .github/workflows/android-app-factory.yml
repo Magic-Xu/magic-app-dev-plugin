@@ -1,0 +1,49 @@
+name: Android App Factory
+
+on:
+  push:
+    paths:
+      - "plugins/magic-app-dev/skills/android-app-factory/**"
+      - ".github/workflows/android-app-factory.yml"
+  pull_request:
+    paths:
+      - "plugins/magic-app-dev/skills/android-app-factory/**"
+      - ".github/workflows/android-app-factory.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6
+      - uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Configure generated repository commits
+        run: |
+          git config --global user.name "android-app-factory-ci"
+          git config --global user.email "android-app-factory-ci@users.noreply.github.com"
+      - name: Generate a new workspace with the tested Platform default
+        run: |
+          python3 plugins/magic-app-dev/skills/android-app-factory/scripts/create_workspace.py \
+            --app-name "Factory CI" \
+            --slug "factory-ci" \
+            --application-id "io.github.magic_xu.factoryci" \
+            --github-owner "Magic-Xu" \
+            --product-sentence-en "A generated app used to verify the Android App Factory." \
+            --product-sentence-zh "用于验证 Android App Factory 的生成应用。" \
+            --parent-dir "${RUNNER_TEMP}" \
+            --effective-date "2026-01-01"
+      - name: Validate structure, Git boundaries, and Android artifacts
+        run: |
+          python3 plugins/magic-app-dev/skills/android-app-factory/scripts/validate_workspace.py \
+            --workspace "${RUNNER_TEMP}/factory-ci"

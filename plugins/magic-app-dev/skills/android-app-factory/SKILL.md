@@ -27,10 +27,13 @@ Before creating files, resolve:
 - GitHub owner.
 - One English product sentence and one Simplified Chinese product sentence.
 - Parent directory for the generated workspace.
-- A released stable Magic Android Platform version in `x.y.z` form with major version at least 1.
 - Whether the user is requesting local repositories only or also remote GitHub creation and Pages publishing.
 
 Repository names default to "<slug>-android" and "<slug>-legal". Read [references/spec-schema.md](references/spec-schema.md) when validating or changing the accepted inputs.
+
+The Factory selects its tested stable Magic Android Platform version by default. Do not ask the
+user to choose a version during normal app creation. Use `--magic-platform-version` only when the
+request explicitly requires testing another already-published stable version.
 
 If a product sentence cannot be derived without inventing the app's purpose, stop and ask. Repository names and the standard locale set may use the defaults unless the user says otherwise.
 
@@ -44,6 +47,7 @@ If a product sentence cannot be derived without inventing the app's purpose, sto
 2. Create the local workspace with "scripts/create_workspace.py".
    - Run with "--dry-run" first and inspect the resolved paths and names.
    - Then run without "--dry-run".
+   - Omit "--magic-platform-version" for normal generation so the Factory-tested default is used.
    - The generator stages all files before moving the completed workspace into place.
 3. Validate with "scripts/validate_workspace.py".
    - Always run structural validation.
