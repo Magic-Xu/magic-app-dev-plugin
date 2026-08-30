@@ -13,10 +13,12 @@ Use these fields when translating a user's request into generator arguments.
 | English product sentence | "--product-sentence-en" | One sentence describing the user and job |
 | Chinese product sentence | "--product-sentence-zh" | Faithful Simplified Chinese equivalent |
 | Parent directory | "--parent-dir" | Existing directory under which the workspace directory is created |
-| Magic Android Platform version | "--magic-platform-version" | Already-published stable `x.y.z` with major >= 1; 0.x, snapshots, and local paths are rejected |
 
 ## Optional
 
+- "--magic-platform-version": defaults to the Factory-tested stable version `1.0.0`. Override only
+  with another already-published stable `x.y.z` version with major >= 1; 0.x, snapshots, and local
+  paths are rejected.
 - "--app-repo-name": defaults to "<slug>-android".
 - "--legal-repo-name": defaults to "<slug>-legal".
 - "--android-locales": comma-separated locale tags. Defaults to:

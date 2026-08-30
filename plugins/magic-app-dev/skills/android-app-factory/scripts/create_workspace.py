@@ -59,6 +59,7 @@ SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 REPO_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
 PACKAGE_SEGMENT_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 STABLE_VERSION_PATTERN = re.compile(r"^[1-9][0-9]*\.[0-9]+\.[0-9]+$")
+DEFAULT_MAGIC_PLATFORM_VERSION = "1.0.0"
 
 
 class FactoryError(RuntimeError):
@@ -85,7 +86,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--product-sentence-en", required=True)
     parser.add_argument("--product-sentence-zh", required=True)
     parser.add_argument("--parent-dir", required=True)
-    parser.add_argument("--magic-platform-version", required=True)
+    parser.add_argument(
+        "--magic-platform-version",
+        default=DEFAULT_MAGIC_PLATFORM_VERSION,
+        help=(
+            "Released stable Magic Android Platform version. "
+            f"Defaults to the Factory-tested version {DEFAULT_MAGIC_PLATFORM_VERSION}."
+        ),
+    )
     parser.add_argument("--app-repo-name")
     parser.add_argument("--legal-repo-name")
     parser.add_argument(
