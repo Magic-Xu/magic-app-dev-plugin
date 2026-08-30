@@ -58,6 +58,7 @@ ANDROID_STRINGS = {
 SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 REPO_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
 PACKAGE_SEGMENT_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+STABLE_VERSION_PATTERN = re.compile(r"^[1-9][0-9]*\.[0-9]+\.[0-9]+$")
 
 
 class FactoryError(RuntimeError):
@@ -84,6 +85,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--product-sentence-en", required=True)
     parser.add_argument("--product-sentence-zh", required=True)
     parser.add_argument("--parent-dir", required=True)
+    parser.add_argument("--magic-platform-version", required=True)
     parser.add_argument("--app-repo-name")
     parser.add_argument("--legal-repo-name")
     parser.add_argument(
@@ -127,6 +129,13 @@ def validate_date(value: str) -> None:
         date.fromisoformat(value)
     except ValueError as error:
         raise FactoryError("effective date must use YYYY-MM-DD") from error
+
+
+def validate_stable_version(value: str) -> None:
+    if not STABLE_VERSION_PATTERN.fullmatch(value):
+        raise FactoryError(
+            "Magic Android Platform version must be a released stable x.y.z version"
+        )
 
 
 def validate_locales(android_locales: Iterable[str], legal_locales: Iterable[str]) -> None:
@@ -227,7 +236,13 @@ plugins {{
 dependencyResolutionManagement {{
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {{
-        google()
+        google {{
+            content {{
+                includeGroupByRegex("com\\\\.android.*")
+                includeGroupByRegex("com\\\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }}
+        }}
         mavenCentral()
     }}
 }}
@@ -237,98 +252,33 @@ include(":app")
 """
 
 
-def root_build_gradle() -> str:
-    return """plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.compose) apply false
-}
+def root_build_gradle(platform_version: str) -> str:
+    return f"""plugins {{
+    id("io.github.magic-xu.magic-android-application") version {json.dumps(platform_version)} apply false
+    id("io.github.magic-xu.magic-android-compose") version {json.dumps(platform_version)} apply false
+    id("io.github.magic-xu.magic-android-pulse") version {json.dumps(platform_version)} apply false
+    id("io.github.magic-xu.magic-android-quality") version {json.dumps(platform_version)} apply false
+}}
 """
 
 
 def app_build_gradle(application_id: str) -> str:
     return f"""plugins {{
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
+    id("io.github.magic-xu.magic-android-application")
+    id("io.github.magic-xu.magic-android-compose")
+    id("io.github.magic-xu.magic-android-pulse")
+    id("io.github.magic-xu.magic-android-quality")
 }}
 
 android {{
     namespace = {json.dumps(application_id)}
-    compileSdk = 36
 
     defaultConfig {{
         applicationId = {json.dumps(application_id)}
-        minSdk = 24
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }}
-
-    buildTypes {{
-        release {{
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }}
-    }}
-
-    compileOptions {{
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }}
-
-    buildFeatures {{
-        compose = true
     }}
 }}
-
-dependencies {{
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.pulse.mvi.platform.android.compose)
-
-    testImplementation(libs.junit)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-}}
-"""
-
-
-def version_catalog() -> str:
-    return """[versions]
-agp = "9.1.0"
-kotlin = "2.2.10"
-coreKtx = "1.18.0"
-lifecycle = "2.10.0"
-activityCompose = "1.13.0"
-composeBom = "2026.02.01"
-pulse = "0.2.0"
-junit = "4.13.2"
-
-[libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
-androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-pulse-mvi-platform-android-compose = { group = "io.github.magic-xu", name = "mvi-platform-android-compose", version.ref = "pulse" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-
-[plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 """
 
 
@@ -423,40 +373,42 @@ fun AppTheme(content: @Composable () -> Unit) {{
 def home_contract(application_id: str) -> str:
     return f"""package {application_id}.feature.home.contract
 
-import com.magic.mvicore.contract.MviEffect
-import com.magic.mvicore.contract.MviIntent
 import com.magic.mvicore.contract.MviState
+import com.magic.mvicore.contract.MviUiIntent
+import com.magic.mvicore.contract.UiEffect
 
 data class HomeState(
     val interactionCount: Int = 0,
 ) : MviState
 
-sealed interface HomeIntent : MviIntent {{
+sealed interface HomeIntent : MviUiIntent {{
     data object OnPrimaryClick : HomeIntent
 }}
 
-sealed interface HomeEffect : MviEffect {{
-    data object Reserved : HomeEffect
-}}
+sealed interface HomeEffect : UiEffect
 """
 
 
-def home_reducer(application_id: str) -> str:
+def home_mutation(application_id: str) -> str:
     return f"""package {application_id}.feature.home.presentation
 
-import com.magic.mvicore.contract.Next
-import com.magic.mvicore.contract.Reducer
+import com.magic.mvicore.contract.MviMutation
+import com.magic.mvicore.contract.PulseMutationReducer
+import com.magic.mvicore.contract.ReduceOutcome
 import {application_id}.feature.home.contract.HomeEffect
-import {application_id}.feature.home.contract.HomeIntent
 import {application_id}.feature.home.contract.HomeState
 
-object HomeReducer : Reducer<HomeState, HomeIntent, HomeEffect> {{
+sealed interface HomeMutation : MviMutation {{
+    data object InteractionIncremented : HomeMutation
+}}
+
+object HomeMutationReducer : PulseMutationReducer<HomeState, HomeMutation, HomeEffect> {{
     override fun reduce(
         previous: HomeState,
-        intent: HomeIntent,
-    ): Next<HomeState, HomeEffect> = when (intent) {{
-        HomeIntent.OnPrimaryClick -> Next.just(
-            previous.copy(interactionCount = previous.interactionCount + 1)
+        mutation: HomeMutation,
+    ): ReduceOutcome<HomeState, HomeEffect> = when (mutation) {{
+        HomeMutation.InteractionIncremented -> ReduceOutcome.Changed(
+            previous.copy(interactionCount = previous.interactionCount + 1),
         )
     }}
 }}
@@ -466,17 +418,42 @@ object HomeReducer : Reducer<HomeState, HomeIntent, HomeEffect> {{
 def home_view_model(application_id: str) -> str:
     return f"""package {application_id}.feature.home.presentation
 
-import com.magic.mvicore.android.PulseViewModel
+import com.magic.mvicore.android.PulseIntentContext
+import com.magic.mvicore.android.PulseIntentExecutionDecision
+import com.magic.mvicore.android.PulseSplitStoreViewModel
+import com.magic.mvicore.android.PulseUiIntentExecutor
 import {application_id}.feature.home.contract.HomeEffect
 import {application_id}.feature.home.contract.HomeIntent
 import {application_id}.feature.home.contract.HomeState
 
-class HomeViewModel : PulseViewModel<HomeState, HomeIntent, HomeEffect>(
+class HomeViewModel : PulseSplitStoreViewModel<
+    HomeState,
+    HomeIntent,
+    HomeMutation,
+    HomeEffect,
+    >(
     initialState = HomeState(),
-    reducer = HomeReducer,
+    mutationReducer = HomeMutationReducer,
+    uiIntentExecutor = HomeIntentExecutor,
 ) {{
-    fun onIntent(intent: HomeIntent) {{
-        dispatch(intent)
+    fun accept(intent: HomeIntent) {{
+        trySend(intent)
+    }}
+}}
+
+private object HomeIntentExecutor : PulseUiIntentExecutor<
+    HomeState,
+    HomeIntent,
+    HomeMutation,
+    > {{
+    override suspend fun execute(
+        intent: HomeIntent,
+        context: PulseIntentContext<HomeState, HomeMutation>,
+    ): PulseIntentExecutionDecision {{
+        when (intent) {{
+            HomeIntent.OnPrimaryClick -> context.mutate(HomeMutation.InteractionIncremented)
+        }}
+        return PulseIntentExecutionDecision.Completed
     }}
 }}
 """
@@ -497,8 +474,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.magic.mvicore.android.compose.collectStateAsState
+import com.magic.mvicore.android.compose.collectStateAsStateWithLifecycle
 import {application_id}.R
 import {application_id}.core.designsystem.AppSpacing
 import {application_id}.feature.home.contract.HomeIntent
@@ -507,10 +485,11 @@ import {application_id}.feature.home.presentation.HomeViewModel
 
 @Composable
 fun HomeRoute(viewModel: HomeViewModel = viewModel()) {{
-    val state by viewModel.collectStateAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val state by viewModel.collectStateAsStateWithLifecycle(lifecycleOwner)
     HomeScreen(
         state = state,
-        onIntent = viewModel::onIntent,
+        onIntent = viewModel::accept,
     )
 }}
 
@@ -547,23 +526,27 @@ fun HomeScreen(
 """
 
 
-def home_reducer_test(application_id: str) -> str:
+def home_mutation_reducer_test(application_id: str) -> str:
     return f"""package {application_id}.feature.home.presentation
 
-import {application_id}.feature.home.contract.HomeIntent
 import {application_id}.feature.home.contract.HomeState
+import com.magic.mvicore.contract.PulseReducer
+import com.magic.mvicore.testing.runPulseTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class HomeReducerTest {{
+class HomeMutationReducerTest {{
     @Test
-    fun primaryClickIncrementsInteractionCount() {{
-        val next = HomeReducer.reduce(
-            previous = HomeState(interactionCount = 2),
-            intent = HomeIntent.OnPrimaryClick,
+    fun mutationIncrementsInteractionCount() = runPulseTest {{
+        val store = testStore(
+            initialState = HomeState(interactionCount = 2),
+            reducer = PulseReducer(HomeMutationReducer::reduce),
         )
+        store.send(HomeMutation.InteractionIncremented)
+        runCurrent()
 
-        assertEquals(3, next.state.interactionCount)
+        assertEquals(3, store.state.value.interactionCount)
+        store.failureProbe.assertEmpty()
     }}
 }}
 """
@@ -582,7 +565,11 @@ def app_agents(android_locales: Iterable[str]) -> str:
 
 - UI uses Jetpack Compose.
 - Page state uses MVI and pulse.
-- Define XxxContract, XxxState, XxxIntent, XxxEffect, XxxReducer, and XxxViewModel before page behavior.
+- Define XxxContract, XxxState, XxxIntent, XxxEffect, typed XxxMutation, and XxxViewModel before page behavior.
+- Every independent page named `XxxScreen` owns an `XxxContract` and `XxxViewModel`. Subordinate loading, empty, error, and section visuals use `XxxContent` or `XxxComponent` instead of `Screen`.
+- The app Store owns routes and app-level coordination only; it must not absorb feature state.
+- Keep the dependency direction `app -> feature -> domain -> core`. Features must not depend on app or sibling features.
+- Magic Android Platform quality rules are mandatory and cannot be disabled or relaxed.
 - Composables render state and dispatch intents. Keep business rules, navigation decisions, system calls, file IO, and network IO outside Composables.
 - Keep image, media, storage, network, and other platform capabilities behind interfaces.
 
@@ -665,7 +652,7 @@ def app_readme(app_name: str, product_sentence: str, legal_repo_name: str) -> st
 Requires JDK 17 or newer. Android Studio's bundled JBR is supported.
 
 ~~~bash
-./gradlew :app:testDebugUnitTest :app:assembleDebug
+./gradlew check :app:assembleDebug :app:assembleRelease :app:bundleRelease
 ~~~
 
 ## Legal site
@@ -710,12 +697,19 @@ def architecture_doc() -> str:
 
 The starter begins with one Gradle application module and package boundaries:
 
+- "app": route state, composition, and cross-feature effect coordination only.
 - "core/designsystem": shared visual tokens and theme.
 - "feature/<feature>/contract": State, Intent, and Effect.
-- "feature/<feature>/presentation": reducer and ViewModel.
+- "feature/<feature>/presentation": typed mutations, reducer, intent executor, and ViewModel.
 - "feature/<feature>/ui": state rendering and intent dispatch.
-- "feature/<feature>/domain": pure rules when product behavior is added.
-- "feature/<feature>/data": platform and data gateways when needed.
+- "domain": stable business models and coordinators shared across features.
+- "core": business-independent platform, storage, network, UI, and design-system capabilities.
+
+Dependency direction is `app -> feature -> domain -> core`. A feature cannot import app or a sibling
+feature. Each independent page named `XxxScreen` has its own `XxxContract` and `XxxViewModel`;
+subordinate loading, empty, error, and section visuals use `XxxContent` or `XxxComponent`. An
+app-level Store is never a container for feature state. Platform quality checks enforce these rules,
+locale parity, package paths, and the 400-line production Kotlin limit without consumer exemptions.
 
 Split Gradle modules only when build speed, ownership, reuse, or enforceable dependency boundaries justify the added cost.
 """
@@ -727,7 +721,7 @@ def testing_doc() -> str:
 Minimum validation for the generated shell:
 
 ~~~bash
-./gradlew :app:testDebugUnitTest :app:assembleDebug
+./gradlew check :app:assembleDebug :app:assembleRelease :app:bundleRelease
 ~~~
 
 For later changes, run the narrowest relevant unit tests first, then compile the affected variant. Device behavior requires an emulator or physical-device check.
@@ -1009,12 +1003,11 @@ local.properties
             repos["legal"],
         ),
         "settings.gradle.kts": settings_gradle(app["name"]),
-        "build.gradle.kts": root_build_gradle(),
+        "build.gradle.kts": root_build_gradle(spec["platform"]["version"]),
         "gradle.properties": """org.gradle.jvmargs=-Xmx2g -Dfile.encoding=UTF-8
 android.useAndroidX=true
 kotlin.code.style=official
 """,
-        "gradle/libs.versions.toml": version_catalog(),
         "app/build.gradle.kts": app_build_gradle(application_id),
         "app/proguard-rules.pro": "# Add project-specific R8 rules only when required.\n",
         "app/src/main/AndroidManifest.xml": manifest_xml(),
@@ -1048,7 +1041,7 @@ kotlin.code.style=official
         f"app/src/main/java/{package_path}/feature/home/contract/HomeContract.kt": home_contract(
             application_id
         ),
-        f"app/src/main/java/{package_path}/feature/home/presentation/HomeReducer.kt": home_reducer(
+        f"app/src/main/java/{package_path}/feature/home/presentation/HomeMutation.kt": home_mutation(
             application_id
         ),
         f"app/src/main/java/{package_path}/feature/home/presentation/HomeViewModel.kt": home_view_model(
@@ -1057,7 +1050,7 @@ kotlin.code.style=official
         f"app/src/main/java/{package_path}/feature/home/ui/HomeScreen.kt": home_screen(
             application_id
         ),
-        f"app/src/test/java/{package_path}/feature/home/presentation/HomeReducerTest.kt": home_reducer_test(
+        f"app/src/test/java/{package_path}/feature/home/presentation/HomeMutationReducerTest.kt": home_mutation_reducer_test(
             application_id
         ),
         "scripts/sync_legal_site.py": sync_legal_script(repos["legal"]),
@@ -1135,6 +1128,10 @@ def create_spec(args: argparse.Namespace) -> dict:
         "Chinese product sentence", args.product_sentence_zh
     )
     validate_date(args.effective_date)
+    platform_version = require_nonempty(
+        "Magic Android Platform version", args.magic_platform_version
+    )
+    validate_stable_version(platform_version)
     validate_locales(args.android_locales, args.legal_locales)
 
     app_repo_name = args.app_repo_name or f"{slug}-android"
@@ -1145,8 +1142,13 @@ def create_spec(args: argparse.Namespace) -> dict:
         raise FactoryError("Android and legal repository names must differ")
 
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "generatedBy": "android-app-factory",
+        "platform": {
+            "coordinates": "io.github.magic-xu:magic-android-platform-gradle-plugin",
+            "version": platform_version,
+            "qualityPolicy": "mandatory",
+        },
         "app": {
             "name": app_name,
             "slug": slug,

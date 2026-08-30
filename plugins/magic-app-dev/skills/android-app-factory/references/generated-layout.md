@@ -42,10 +42,14 @@ The generator produces:
 
 - One ":app" Gradle module.
 - Jetpack Compose and Material 3.
-- pulse Android Compose dependency.
-- "HomeContract", "HomeState", "HomeIntent", "HomeEffect", "HomeReducer", and "HomeViewModel".
+- One pinned released Magic Android Platform version supplying Application, Compose, Pulse, and mandatory Quality plugins.
+- "HomeContract", "HomeState", "HomeIntent", "HomeEffect", typed "HomeMutation", "HomeMutationReducer", and "HomeViewModel".
 - Composables render state and dispatch intents only.
 - Design values live in "core/designsystem".
+- Dependency direction is `app -> feature -> domain -> core`; features cannot import app or sibling features.
+- Each independent page named "XxxScreen" owns an "XxxContract" and "XxxViewModel"; subordinate loading, empty, error, and section visuals use "XxxContent" or "XxxComponent".
+- App state is limited to routes and cross-feature coordination.
+- All quality gates are mandatory, including feature-UI platform boundaries, locale parity, and the 400-line production Kotlin limit.
 - Default Android locales:
   "en", "zh-CN", "zh-Hant", "es", "pt-BR", "hi", "ur", "fr", "ja", "ko", "id", "th", "vi", "ms", and "fil".
 

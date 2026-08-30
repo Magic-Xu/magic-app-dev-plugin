@@ -27,6 +27,7 @@ Before creating files, resolve:
 - GitHub owner.
 - One English product sentence and one Simplified Chinese product sentence.
 - Parent directory for the generated workspace.
+- A released stable Magic Android Platform version in `x.y.z` form with major version at least 1.
 - Whether the user is requesting local repositories only or also remote GitHub creation and Pages publishing.
 
 Repository names default to "<slug>-android" and "<slug>-legal". Read [references/spec-schema.md](references/spec-schema.md) when validating or changing the accepted inputs.
@@ -46,7 +47,8 @@ If a product sentence cannot be derived without inventing the app's purpose, sto
    - The generator stages all files before moving the completed workspace into place.
 3. Validate with "scripts/validate_workspace.py".
    - Always run structural validation.
-   - Run the Gradle unit test and debug compile when an Android SDK is available.
+   - Run `check`, Debug and Release APK builds, and the Release AAB when an Android SDK is available.
+   - The validator may use `--platform-source` for local Factory acceptance only. Never persist that local path in a generated repository.
 4. Review legal accuracy.
    - The generated shell truthfully declares no accounts, server upload, ads, billing, analytics, or sensitive permissions.
    - If the requested initial implementation adds any of those capabilities, do not publish the default legal pages. Update the capability model and legal content after inspecting the real implementation.
@@ -72,8 +74,11 @@ Read [references/generated-layout.md](references/generated-layout.md) when chang
 ## Acceptance
 
 - Both child directories are independent Git repositories on branch "main" with clean initial commits.
-- The Android app passes ":app:testDebugUnitTest" and ":app:assembleDebug".
-- The app uses Compose for UI and pulse for State, Intent, Effect, reducer, and ViewModel boundaries.
+- The Android app passes `check`, `:app:assembleDebug`, `:app:assembleRelease`, and `:app:bundleRelease`.
+- The app uses the released Magic Android Platform Application, Compose, Pulse, and Quality plugins at one pinned version.
+- The app uses Pulse 0.4 feature-owned Stores with State, UI Intent, Effect, typed Mutation, reducer, and ViewModel boundaries.
+- Only independent pages use the `XxxScreen` name and page contract; subordinate visual states use `XxxContent` or `XxxComponent`.
+- Platform quality checks are mandatory: consumers cannot disable dependency, feature-UI platform boundary, MVI, locale, package-path, or 400-line file-size rules.
 - User-visible Android strings exist in every generated Android locale.
 - The public repository contains no private app source or secrets.
 - Root English legal URLs and localized English and Simplified Chinese URLs exist.
