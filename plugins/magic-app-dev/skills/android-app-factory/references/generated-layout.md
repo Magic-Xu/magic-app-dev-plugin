@@ -7,17 +7,27 @@ The generator produces:
   <slug>.code-workspace
   <slug>-android/
     .app-factory/spec.json
+    .github/workflows/repository-layout.yml
     .git/
     AGENTS.md
     README.md
     app/
     docs/
+      README.md
       decisions/
       engineering/
-      legal-source/
+      operations/
       product/
+    publishing/
+      README.md
+      legal/
     gradle/
-    scripts/sync_legal_site.py
+    tools/
+      README.md
+      publishing/legal/sync_to_legal_repo.py
+      repository/
+        validate_layout.py
+        tests/test_validate_layout.py
   <slug>-legal/
     .app-factory-legal.json
     .git/
@@ -33,10 +43,18 @@ The generator produces:
 
 ## Ownership
 
-- The Android repository owns the product specification and canonical legal source.
-- The legal repository owns no private data. It is a publishable projection of "docs/legal-source/".
-- "scripts/sync_legal_site.py" copies only the canonical legal-source tree and verifies the target marker before writing.
+- The Android repository owns the product specification, repository layout policy, and canonical legal source.
+- The legal repository owns no private data. It is a publishable projection of `publishing/legal/`.
+- `tools/publishing/legal/sync_to_legal_repo.py` copies only the canonical legal tree and verifies the target marker before writing.
 - The parent workspace is not a third Git repository.
+
+## Repository Information Architecture
+
+- `docs/` contains current human-readable product facts, engineering rules, operator procedures, and durable decisions only.
+- `design/` contains editable visual sources; `tools/` contains executable helpers; `publishing/` contains external-system inputs; `releases/` contains immutable completed-release evidence.
+- Reproducible logs, screenshots, media, reports, and build outputs belong in the ignored root `build/` directory.
+- One current source represents each stateful topic. Git history replaces `final`, dated, copied, archived, or version-suffixed document variants.
+- The generated repository tests its layout validator and runs it in the `Repository Layout` workflow. Apps may add product-specific required paths or compatibility exceptions without weakening the shared lifecycle boundaries.
 
 ## Android Baseline
 

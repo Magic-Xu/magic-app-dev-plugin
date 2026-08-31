@@ -49,7 +49,7 @@ Skill 源码位于 `plugins/magic-app-dev/skills/`。
 | `android-device-keep-awake` | 在明确指定的长程开发任务中，按实际供电类型让一台已连接 Android 真机持续亮屏。 |
 | `android-instrumentation-qa-guardrails` | 用可复现的 adb/instrumentation 证据验证 Android UI 流程。 |
 | `app-change-self-check` | 交付前用具体证据检查 app 改动。 |
-| `app-end-to-end-delivery` | 端到端实现、验证、打包和交付 app feature 或 bug fix。 |
+| `app-end-to-end-delivery` | 将 Factory 工作区的任意需求路由到所属的 App、Platform 或 Factory 边界，再完成实现、验证与交付。 |
 | `github-pr-mainline-release` | 推送已验收改动、创建或复用 PR，按有 CI/无 CI 路径验证，在适用时 squash 合并、清理源分支并恢复 mainline。 |
 
 ## 结构
