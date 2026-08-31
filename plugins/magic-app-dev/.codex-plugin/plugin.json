@@ -1,6 +1,6 @@
 {
   "name": "magic-app-dev",
-  "version": "0.1.2+codex.20260830191905",
+  "version": "0.2.0+codex.20260831133726",
   "description": "Reusable Codex skills for independent app development and operations.",
   "author": {
     "name": "Magic Xu",
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Magic App Dev",
     "shortDescription": "Independent app development workflows for Codex.",
-    "longDescription": "Magic App Dev packages reusable Codex skills for independent app development: demand research, product and stability analytics, paired Android and legal-site workspace creation, local-first Android app building, architecture guardrails, long-running Android device setup, instrumentation QA, change self-checks, end-to-end delivery, and mainline PR release workflows.",
+    "longDescription": "Magic App Dev packages reusable Codex skills for independent app development: demand research, product and stability analytics, paired Android and legal-site workspace creation, architecture-aware requirement routing, Android implementation and QA, change self-checks, and mainline PR release workflows.",
     "developerName": "Magic Xu",
     "category": "Productivity",
     "capabilities": [
@@ -30,13 +30,9 @@
       "GitHub"
     ],
     "defaultPrompt": [
-      "Use Magic App Dev to plan a local-first Android app.",
-      "Analyze my app's current product, growth, retention, and revenue metrics.",
-      "Review recent crashes and ANRs and tell me which issue to fix first.",
-      "Create a paired Android and public legal-site workspace for a new app.",
-      "Review this Android change with app architecture guardrails.",
-      "Keep my connected Android device awake during a long development task.",
-      "Run an app change self-check before handoff."
+      "Create a new local-first Android app workspace.",
+      "Route and deliver this Android requirement through the right architecture boundary.",
+      "Analyze this released app's product health and stability."
     ],
     "brandColor": "#2563EB"
   }

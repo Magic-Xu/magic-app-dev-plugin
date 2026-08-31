@@ -1,0 +1,42 @@
+name: Plugin Package
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "plugins/magic-app-dev/**"
+      - "tools/plugin/**"
+      - ".github/workflows/plugin-package.yml"
+  pull_request:
+    paths:
+      - "plugins/magic-app-dev/**"
+      - "tools/plugin/**"
+      - ".github/workflows/plugin-package.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-plugin-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - name: Test plugin release validator
+        run: python3 -m unittest discover -s tools/plugin/tests -p 'test_*.py'
+      - name: Validate plugin manifest and release version
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha }}
+        run: |
+          args=(
+            --repo-root .
+            --plugin-root plugins/magic-app-dev
+          )
+          if [[ -n "${BASE_REF}" ]]; then
+            args+=(--base-ref "${BASE_REF}")
+          fi
+          python3 tools/plugin/validate_release.py "${args[@]}"
