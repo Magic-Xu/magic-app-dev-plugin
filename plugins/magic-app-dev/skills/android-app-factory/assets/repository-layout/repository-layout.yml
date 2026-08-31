@@ -1,0 +1,32 @@
+name: Repository Layout
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  repository-layout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test repository layout validator
+        run: python3 -m unittest discover -s tools/repository/tests -p 'test_*.py'
+
+      - name: Validate repository layout
+        run: python3 tools/repository/validate_layout.py

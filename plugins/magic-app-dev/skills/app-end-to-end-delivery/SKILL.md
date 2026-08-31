@@ -1,118 +1,175 @@
 ---
 name: app-end-to-end-delivery
-description: Use when implementing, validating, packaging, or handing off an app feature or bug fix end to end across a local repository. Guides Codex through requirement clarification, branch/worktree hygiene, scoped implementation, automated and device/browser validation, install/package verification, and delivery reporting. Do not use it to push, open PRs, merge to main, delete branches, or release unless the user explicitly asks for those delivery actions.
+description: Use as the unified delivery entry for requirements and bug fixes in Magic Android App Factory workspaces, including stateful UI, domain logic, Android or IO gateways, cross-feature orchestration, shared Platform engineering, and new product initialization. Route work to the owning boundary before implementing, then validate and hand it off with evidence. Do not use it to push, open PRs, merge, release, or deploy unless the user explicitly asks for those actions.
 ---
 
 # App End-to-End Delivery
 
-## Purpose
+## Outcome
 
-Use this skill to turn an app change request into a complete, evidence-backed handoff. It is repository-agnostic: follow local project rules first, then use this workflow to avoid stopping at "code compiles" when the user expected a working product path.
+Turn an app requirement into the smallest complete set of correctly owned changes and enough evidence
+to show the accepted behavior works. Route the requirement before choosing files or templates. Follow the
+target repository's rules when they are stricter.
 
-## Hard Boundary
+This skill coordinates delivery; it is not a feature generator or a product framework.
 
-Do not start PR, mainline merge, branch deletion, release, store upload, or production deployment work unless the user explicitly asks for that action.
+## Boundaries
 
-Treat phrases like "继续开发", "验证一下", "重新安装", "打包", "给我看效果", or "可以了" as implementation or validation instructions, not permission to merge.
+- Factory creates new product workspaces. It does not generate routine changes for existing apps.
+- Platform owns build conventions, dependency baselines, and mandatory quality rules shared by apps. It
+  does not own product behavior.
+- Keep product-specific behavior in the consumer app. A possible shared runtime remains app-owned until
+  at least two maintained real apps share its semantics, lifecycle, and test contract.
+- Do not create empty layers, placeholder abstractions, or parallel `Screen`, Contract, and ViewModel files
+  merely to make a change resemble a template.
+- Do not start PR, merge, branch deletion, release, store upload, or deployment work without explicit user
+  instruction. Implementation, validation, packaging, or approval of local behavior does not imply it.
 
-If the user explicitly asks to merge, release, or clean branches, use the repository's dedicated release/PR skill if one exists. Otherwise discover the repo policy and ask before any irreversible remote operation.
-
-## Workflow
-
-### 1. Clarify The Target
-
-Start from the user's real desired outcome, not from a template.
-
-- Identify the user-visible workflow being changed.
-- Define success in observable terms: screen state, persisted data, generated file, installed app behavior, API response, or test result.
-- Ask only if the missing answer changes implementation or validation. Otherwise make a conservative assumption and state it.
-- Record explicit non-goals when the user rejects a path or scope.
-
-### 2. Inspect Local Rules And State
+## Establish The Delivery Target
 
 Before editing:
 
-- Read `AGENTS.md` or equivalent local instructions.
-- Inspect relevant docs such as `README`, `docs/engineering`, architecture decisions, workflow docs, or CI files.
-- Check branch and worktree state with `git status --short --branch`.
-- If the repo forbids direct edits on `main` or `master`, create or use an existing feature branch/worktree before editing.
-- Never revert unrelated user changes. If unrelated dirty files exist, leave them alone.
+1. Read `AGENTS.md`, the root and documentation indexes, the requirement baseline, relevant engineering
+   docs and decisions, nearby code and tests, CI or validation commands, and `git status --short --branch`.
+2. Express the requested result as observable behavior, non-functional constraints, and evidence that can
+   prove it. For a defect, identify the violated ownership or invariant instead of patching only the symptom.
+3. Inspect how the target app already represents the same kind of state, rule, gateway, or orchestration.
+   Existing names are evidence, not authority when they violate repository rules.
+4. Ask only when missing information changes product meaning, permissions, data handling, or the deliverable.
+   Otherwise make the narrowest evidence-backed assumption and continue.
 
-### 3. Implement In The Right Layer
+Keep a concise route map in the conversation or task notes unless the repository explicitly requires a
+design artifact:
 
-Keep the change aligned with the app's architecture.
+| Concern | Semantic owner | Minimum artifact | Allowed dependency | Proof |
+| --- | --- | --- | --- | --- |
+| One behavior or constraint | One owning layer | Only what behavior needs | Higher layer to lower layer | Risk-matched evidence |
 
-- Put UI rendering in UI components only.
-- Put navigation, state transitions, persistence, playback, network, file, and platform decisions in the existing app/state/platform layers.
-- Prefer existing helpers, design tokens, resource systems, and test patterns.
-- Keep edits tightly scoped. Avoid opportunistic refactors unless they remove real risk for this request.
-- Add strings, accessibility labels, permissions, and platform declarations through the repo's normal mechanisms.
+For every row, explain why that owner holds the semantic decision. A requirement may span several rows,
+but each row must retain only its layer's meaning.
 
-### 4. Validate By Risk
+## Route By Semantic Owner
 
-Run the narrowest checks that can prove the change, then broaden when the blast radius is larger.
+Use the target app's established module names when they express the same boundaries.
 
-Always consider:
+| Requirement shape | Default owner | Typical artifacts |
+| --- | --- | --- |
+| UI with its own product state and interaction | `feature` | Existing or new feature state handling, UI, and behavior tests |
+| Stable business rule independent of UI and Android | `domain` | Model, policy, use case, engine, or pure Kotlin tests |
+| File, network, media, storage, SDK, or Android system capability | `core` gateway | Boundary interface when useful, platform implementation, contract or integration tests |
+| Cross-feature navigation, effects, or lifecycle coordination | `app` | Effect handler, composition, navigation, or session coordination |
+| Build, dependency, or quality decision shared by apps | Magic Android Platform | Convention plugin, quality rule, and consumer contract or smoke tests |
+| New product workspace | Android App Factory | Paired Android/legal repositories and complete generation validation |
 
-- Compile/build for the changed target.
-- Unit tests for changed business logic or reducers.
-- Static checks, lint, typecheck, formatting, or `git diff --check`.
-- UI tests or integration tests when a stateful user flow changed.
-- Device/emulator/browser validation when the change affects visible app behavior.
+The dependency direction is `app -> feature -> domain -> core`: higher layers may depend on lower layers,
+never the reverse. Features do not depend on sibling features. Put cross-feature coordination in `app`, and
+put genuinely shared business state in `domain` rather than using one feature as another's service.
 
-For app UI work, validation should include real interaction evidence where practical:
+Route to Platform only when the requirement is a shared engineering baseline. Do not move a product runtime
+there because reuse seems plausible. Route to Factory only for new workspace initialization or a change to
+what every newly generated workspace must contain; do not use it to update an existing app.
 
-- Launch the app from a clean or known state.
-- Navigate through the changed user flow from the real entry point.
-- Exercise the success path and at least the likely regression path.
-- Capture screenshots, UI tree, logs, terminal output, or generated artifacts as evidence.
-- Verify after installation/package if the user asked to install, package, or "see it on device".
+## Choose The Minimum Artifacts
 
-Do not call a single adb/browser screenshot "full end-to-end delivery" unless it covers the complete accepted path and post-change state. Label it accurately as smoke, regression, device, browser, or full E2E validation.
+- Use a page MVI skeleton only when the requirement creates independently owned page state and interaction.
+  Then use the repository's page Contract, mutation or reducer, ViewModel, route or screen, and behavior-test
+  pattern.
+- For stateful UI inside an existing page or flow, extend its feature-owned state and behavior, or add a
+  focused component state holder when ownership requires one. Do not create another page Contract,
+  `Screen`, or ViewModel.
+- For pure domain behavior, prefer a named rule, function, policy, or use case plus pure tests. Add an
+  interface only when substitution, ownership, or a real side-effect boundary requires one.
+- For Android or IO behavior, keep Android classes and side effects behind the existing or smallest useful
+  core gateway. UI sends events; it does not call the system, filesystem, network, or SDK directly.
+- For app orchestration, consume typed feature outcomes and coordinate routes, effects, and lifecycles
+  without absorbing feature state or domain rules into the app shell.
+- Reuse existing helpers and contracts when their semantics match. Do not add an otherwise unused layer or
+  product-specific exception to satisfy structural symmetry or a quality gate.
 
-### 5. Package Or Install Only When Requested Or Needed
+Load `$android-app-architecture-guardrails` when Android implementation or review touches architecture,
+state flow, Compose, resources, platform calls, or long-term maintainability. Apply its page-specific MVI
+rules only to independently stateful pages, not to domain, gateway, app orchestration, or subordinate UI
+work.
 
-If the app must run from an installable package, build the package and install it when the user asks or when device validation requires it.
+For realistic routing examples and acceptance expectations, read
+[references/routing-scenarios.md](references/routing-scenarios.md).
 
-- Use the repo's normal build command.
-- Install the artifact that was just built.
-- Re-run the user-visible flow after install when install behavior matters.
-- Report the exact artifact type and validation device/simulator/browser.
+## Place Persistent Artifacts By Meaning
 
-### 6. Prepare A Handoff
+Before creating or moving a file, identify its reader, use, and lifetime. Follow the target repository's
+layout contract and validator when present. In Factory-generated workspaces, use these defaults:
 
-Before final response:
+| Artifact meaning | Default location |
+| --- | --- |
+| Current product facts | `docs/product/` |
+| Current engineering rules | `docs/engineering/` |
+| Operator and external-system procedures | `docs/operations/` |
+| Durable decision history | `docs/decisions/` |
+| Editable visual sources | `design/` |
+| Executable helpers and validators | `tools/` |
+| Store, website, and other external publishing inputs | `publishing/` |
+| Immutable completed-release evidence | `releases/` |
+| Reproducible logs, screenshots, media, reports, and build output | ignored `build/` |
 
-- Check `git status --short --branch`.
-- Summarize what changed and why, not every file touched.
-- List validation commands and whether they passed.
-- Include concrete evidence paths only when useful.
-- State anything not validated and why.
-- Do not claim PR, CI, merge, release, or production completion unless those actions actually happened.
+Keep one current source for each stateful topic; update it instead of adding `final`, copied, dated,
+archived, or version-suffixed variants. Git preserves superseded states. A feature requirement may produce
+artifacts in several top-level areas, but each artifact follows its own meaning rather than being placed
+under the feature by association. Do not create a persistent file when its reader or lifetime is unknown.
+
+## Implement Within The Selected Boundary
+
+- Work on a task branch or worktree when repository policy forbids direct mainline edits. Preserve unrelated
+  user changes.
+- Implement the root behavior in its owner, then wire only the dependencies needed to expose it. Re-check the
+  route map if implementation requires a lower layer to import a higher layer or one feature to import another.
+- Use repository resource, localization, permission, manifest, dependency injection, and testing mechanisms.
+- After adding or moving persistent files, run the repository's layout validator and its contract tests when
+  available. Fix the artifact ownership or the validator's generic analysis; do not add a product exception
+  merely to make the gate pass.
+- When the route is a new product workspace, invoke `$android-app-factory` and use its authoritative generator
+  and acceptance flow instead of reproducing workspace creation here.
+- Keep Factory and Platform changes in their own repositories and branches. Generated apps consume the
+  Factory-tested published Platform version; local composite paths are temporary validation inputs and are
+  never persisted in generated workspaces.
+- Do not switch repositories, data sources, permissions, validation quality, or delivery form as a fallback
+  when the selected path fails. Report the root cause and ask before changing the intended path.
+
+## Validate By Risk
+
+Run the narrowest check that can fail for the changed semantic, then broaden until the accepted behavior and
+affected integration boundary are covered. Repository-mandated checks remain mandatory.
+
+| Change | Primary evidence | Broaden when |
+| --- | --- | --- |
+| Stateful feature UI | State, reducer, or ViewModel tests; Compose/UI behavior test; affected compile target | Run Platform Quality and Lint for structure/resources; use a device for real interaction or lifecycle; build an APK when installation or packaged integration matters |
+| Pure domain rule | Focused pure Kotlin unit tests and affected module compile | Run dependency/quality checks when packages or module edges changed; no APK, AAB, or device proof solely for isolated logic |
+| Android or IO gateway | Contract/unit tests for deterministic behavior; Android integration or instrumentation proof for the real boundary; affected compile target | Run Lint for APIs, resources, permissions, or manifest changes; use a device for OS/provider/lifecycle semantics; package when runtime integration requires it |
+| Cross-feature orchestration | Effect-handler, route, or coordinator tests plus an integration path across the involved features | Run Platform Quality to prove feature isolation; use a device when navigation, process, or lifecycle behavior is material |
+| Platform engineering | Plugin or quality-rule tests and executable consumer contracts or smoke builds | Validate a maintained real consumer and Factory generation when compatibility or the generated baseline changes |
+| Factory initialization | Generator dry run, structural validation, clean generated Git boundaries, and the Factory's full generated-app check | Build Debug/Release APK and Release AAB as required by Factory acceptance; use a device only for product behavior added beyond the starter |
+
+In Factory-generated apps, do not disable or relax Platform Quality. Use the repository's exact task names;
+`check`, Lint, compile, APK, AAB, and device validation are distinct evidence and are not interchangeable.
+A screenshot is only visual evidence unless the recorded interaction covers the accepted path and resulting
+state. If a required proof needs unavailable credentials, network, SDK, or hardware, run the remaining valid
+checks and report the gap precisely.
+
+## Review And Hand Off
+
+Before delivery:
+
+1. Inspect the final diff and `git status --short --branch`; exclude build outputs, local paths, credentials,
+   temporary evidence, and unrelated changes.
+2. Re-check each route-map row for ownership, minimum artifacts, dependency direction, and matching proof.
+3. Perform any repository-required artifact-boundary review. Keep persistent artifacts focused on the final
+   behavior and durable constraints rather than rejected approaches or agent work history.
+4. Report changed behavior and its owning boundary, the reason for that route, commands and evidence that
+   passed, packaging or device status when applicable, and any unverified risk.
+
+Do not claim CI, PR, merge, release, or production completion unless it actually happened.
 
 ## Delivery Escalation
 
-Only after explicit user instruction such as "走 PR", "创建 PR", "合并到主干", "发布", "清理远端分支", or equivalent:
-
-1. Re-check branch status and remote state.
-2. Commit only accepted in-scope changes.
-3. Push the feature branch.
-4. Create or reuse a PR targeting the mainline branch.
-5. Wait for CI for the exact PR head SHA.
-6. Merge only when CI succeeds and repository policy allows it.
-7. Clean merged branches only when safe and requested or documented.
-8. Restore local mainline and verify it is clean and up to date.
-
-If a dedicated PR/mainline-release skill exists, use it for this section instead of reimplementing it.
-
-## Final Response Template
-
-Use concise prose. Include:
-
-- Changed behavior.
-- Important implementation boundary or root cause.
-- Validation run.
-- Install/package status if applicable.
-- Remaining risk or skipped validation.
-
-Avoid long file inventories unless the user asked for them.
+Only after an explicit request to push, create a PR, merge, release, or clean branches, re-check remote state
+and use the repository's dedicated release or mainline skill when available. Keep that workflow separate from
+local requirement delivery.

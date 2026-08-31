@@ -1,4 +1,4 @@
 interface:
-  display_name: "App E2E Delivery"
-  short_description: "End-to-end app change delivery guardrails"
-  default_prompt: "Use $app-end-to-end-delivery to take this app change from implementation through validation and delivery handoff."
+  display_name: "App Requirement Delivery"
+  short_description: "Route and deliver Android app requirements"
+  default_prompt: "Use $app-end-to-end-delivery to route this Android app requirement to the right boundary, implement it, validate it by risk, and prepare the handoff."

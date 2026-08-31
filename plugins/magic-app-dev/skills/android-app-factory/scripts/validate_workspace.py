@@ -147,7 +147,7 @@ def validate_public_boundary(app_root: Path, legal_root: Path) -> None:
         if path.name in private_names or path.suffix in private_suffixes:
             raise ValidationError(f"private app artifact found in public repository: {path}")
 
-    source_root = app_root / "docs" / "legal-source"
+    source_root = app_root / "publishing" / "legal"
     for source_path in source_root.rglob("*"):
         if not source_path.is_file():
             continue
@@ -234,9 +234,20 @@ def main() -> int:
             f"app/src/main/java/{package_path}/feature/home/presentation/HomeViewModel.kt",
             f"app/src/main/java/{package_path}/feature/home/ui/HomeScreen.kt",
             f"app/src/test/java/{package_path}/feature/home/presentation/HomeMutationReducerTest.kt",
-            "docs/legal-source/privacy-policy.html",
-            "docs/legal-source/user-agreement.html",
-            "scripts/sync_legal_site.py",
+            "docs/README.md",
+            "docs/product/product-requirements.md",
+            "docs/engineering/architecture.md",
+            "docs/engineering/testing.md",
+            "docs/operations/README.md",
+            "docs/decisions/README.md",
+            "tools/README.md",
+            "tools/repository/validate_layout.py",
+            "tools/repository/tests/test_validate_layout.py",
+            "tools/publishing/legal/sync_to_legal_repo.py",
+            "publishing/README.md",
+            "publishing/legal/privacy-policy.html",
+            "publishing/legal/user-agreement.html",
+            ".github/workflows/repository-layout.yml",
         )
         for relative in required_app_files:
             require_file(app_root / relative)
@@ -259,6 +270,20 @@ def main() -> int:
             require_file(legal_root / relative)
 
         validate_public_boundary(app_root, legal_root)
+        run(
+            [
+                "python3",
+                "-m",
+                "unittest",
+                "discover",
+                "-s",
+                "tools/repository/tests",
+                "-p",
+                "test_*.py",
+            ],
+            cwd=app_root,
+        )
+        run(["python3", "tools/repository/validate_layout.py"], cwd=app_root)
 
         settings = (app_root / "settings.gradle.kts").read_text(encoding="utf-8")
         validate_google_repository_filters(settings)
@@ -364,6 +389,7 @@ def main() -> int:
             "androidRepository": str(app_root),
             "legalRepository": str(legal_root),
             "structure": "passed",
+            "repositoryLayout": "passed",
             "git": "passed"
             if (app_root / ".git").is_dir() and (legal_root / ".git").is_dir()
             else "not-initialized",

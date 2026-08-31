@@ -587,10 +587,18 @@ def app_agents(android_locales: Iterable[str]) -> str:
 - Update every supported locale together: {locale_text}.
 - Put shared color, typography, spacing, radius, and size values in the design system.
 
+## Repository organization
+
+- Read docs/README.md before creating or moving persistent files.
+- Keep current product facts in docs/product, engineering rules in docs/engineering, operator procedures in docs/operations, and durable decision history in docs/decisions.
+- Keep editable visual sources in design, executable helpers in tools, external publishing inputs in publishing, immutable release evidence in releases, and reproducible local outputs in the ignored build directory.
+- Keep one current source per topic. Update it instead of adding final, copy, dated, or version-suffixed state documents; Git preserves superseded states.
+- After adding or moving files, run the repository layout tests and validator documented in tools/README.md.
+
 ## Legal source
 
-- Canonical public-site and legal files live in docs/legal-source.
-- Run scripts/sync_legal_site.py after approved legal changes.
+- Canonical public-site and legal files live in publishing/legal.
+- Run tools/publishing/legal/sync_to_legal_repo.py after approved legal changes.
 - Update the Privacy Policy before releasing capabilities that change data collection, sharing, storage, permissions, ads, billing, analytics, or accounts.
 
 ## Git
@@ -617,8 +625,8 @@ def main() -> None:
     parser.add_argument("target", nargs="?")
     args = parser.parse_args()
 
-    app_root = Path(__file__).resolve().parents[1]
-    source = app_root / "docs" / "legal-source"
+    app_root = Path(__file__).resolve().parents[3]
+    source = app_root / "publishing" / "legal"
     target = (
         Path(args.target).expanduser().resolve()
         if args.target
@@ -663,14 +671,33 @@ Requires JDK 17 or newer. Android Studio's bundled JBR is supported.
 ./gradlew check :app:assembleDebug :app:assembleRelease :app:bundleRelease
 ~~~
 
+## Repository map
+
+| Path | Ownership |
+| --- | --- |
+| `app/` | Android product code, tests, and packaged resources |
+| `docs/` | Current product facts, engineering rules, operator procedures, and decisions |
+| `design/` | Editable brand, product, and marketing design sources |
+| `tools/` | Executable QA, repository, publishing, and release helpers |
+| `publishing/` | Content copied to stores, websites, or other external systems |
+| `releases/` | Immutable evidence for completed releases |
+| `build/` | Reproducible local outputs; ignored by Git |
+
+Read `docs/README.md` before adding persistent files. After adding or moving files, run:
+
+~~~bash
+python3 -m unittest discover -s tools/repository/tests -p 'test_*.py'
+python3 tools/repository/validate_layout.py
+~~~
+
 ## Legal site
 
-Canonical website and legal files are stored in "docs/legal-source".
+Canonical website and legal files are stored in `publishing/legal/`.
 
 Sync them into the sibling public repository:
 
 ~~~bash
-python3 scripts/sync_legal_site.py ../{legal_repo_name}
+python3 tools/publishing/legal/sync_to_legal_repo.py ../{legal_repo_name}
 ~~~
 """
 
@@ -697,6 +724,47 @@ Define:
 - Required Android system capabilities.
 
 The generated ready screen validates architecture and compilation only; it is not the product's V1 loop.
+"""
+
+
+def docs_readme() -> str:
+    return """# Documentation
+
+This directory contains current human-readable product facts, engineering rules, operator procedures,
+and durable decision records. It does not own editable design sources, executable tools, external
+publishing inputs, release binaries, or generated output.
+
+## Current sources
+
+| Question | Source |
+| --- | --- |
+| What should the product do now? | [product/product-requirements.md](product/product-requirements.md) |
+| Which architecture boundaries apply? | [engineering/architecture.md](engineering/architecture.md) |
+| How is the change verified? | [engineering/testing.md](engineering/testing.md) |
+| How does an operator perform a release or external configuration step? | [operations/](operations/) |
+| Why was a durable tradeoff chosen? | [decisions/](decisions/) |
+
+## Place a new artifact
+
+| Artifact meaning | Location |
+| --- | --- |
+| Current product behavior or constraint | `docs/product/` |
+| Current engineering rule or architecture | `docs/engineering/` |
+| Release or external-system procedure | `docs/operations/` |
+| Durable decision history | `docs/decisions/` |
+| Editable visual source | `design/` |
+| Executable helper or validator | `tools/` |
+| Content copied to an external system | `publishing/` |
+| Immutable completed-release evidence | `releases/` |
+| Reproducible logs, screenshots, media, or reports | ignored `build/` |
+
+Keep one current source for each topic. Update it instead of creating `final`, `copy`, dated, or
+version-suffixed state documents. Git preserves superseded states. ADRs and completed release evidence
+may remain because their purpose is historical.
+
+If the reader, use, and lifetime of a proposed file are unclear, keep the material in the task, issue,
+or pull request until they are known. After adding or moving files, run the commands in
+[../tools/README.md](../tools/README.md).
 """
 
 
@@ -733,6 +801,55 @@ Minimum validation for the generated shell:
 ~~~
 
 For later changes, run the narrowest relevant unit tests first, then compile the affected variant. Device behavior requires an emulator or physical-device check.
+"""
+
+
+def operations_readme() -> str:
+    return """# Operations
+
+Store release, publishing, account-console, and external configuration procedures here. These documents
+tell an operator how to perform a task; they do not define product behavior.
+"""
+
+
+def tools_readme() -> str:
+    return """# Tools
+
+Store executable QA, repository, publishing, and release helpers here. Tool output belongs in the ignored
+root `build/` directory.
+
+After adding or moving repository files, run:
+
+```bash
+python3 -m unittest discover -s tools/repository/tests -p 'test_*.py'
+python3 tools/repository/validate_layout.py
+```
+"""
+
+
+def publishing_readme() -> str:
+    return """# Publishing
+
+Store content intended to be copied to app stores, websites, or other external systems here. Publishing
+inputs are not product requirements or engineering rules. Verify both the source and the external system
+before reporting publication complete.
+"""
+
+
+def legal_hosting_doc(github_owner: str, legal_repo_name: str) -> str:
+    return f"""# Legal Site Publishing
+
+Public repository: `{github_owner}/{legal_repo_name}`
+
+Expected Pages URLs:
+
+- https://{github_owner.lower()}.github.io/{legal_repo_name}/
+- https://{github_owner.lower()}.github.io/{legal_repo_name}/privacy-policy.html
+- https://{github_owner.lower()}.github.io/{legal_repo_name}/user-agreement.html
+
+The public repository is generated from `publishing/legal/`. Run
+`python3 tools/publishing/legal/sync_to_legal_repo.py ../{legal_repo_name}` after approved legal changes,
+then review and commit the public repository separately.
 """
 
 
@@ -998,6 +1115,11 @@ def app_files(spec: dict) -> dict[str, str]:
 .idea/
 .kotlin/
 **/build/
+/.worktrees/
+/build/
+__pycache__/
+*.py[cod]
+.DS_Store
 local.properties
 *.iml
 *.jks
@@ -1061,30 +1183,27 @@ kotlin.code.style=official
         f"app/src/test/java/{package_path}/feature/home/presentation/HomeMutationReducerTest.kt": home_mutation_reducer_test(
             application_id
         ),
-        "scripts/sync_legal_site.py": sync_legal_script(repos["legal"]),
-        "docs/product/v1-requirements.md": product_requirements(
+        "tools/publishing/legal/sync_to_legal_repo.py": sync_legal_script(
+            repos["legal"]
+        ),
+        "docs/README.md": docs_readme(),
+        "docs/product/product-requirements.md": product_requirements(
             app["name"],
             app["productSentence"]["en"],
             app["productSentence"]["zh-CN"],
         ),
         "docs/engineering/architecture.md": architecture_doc(),
         "docs/engineering/testing.md": testing_doc(),
+        "docs/operations/README.md": operations_readme(),
         "docs/decisions/README.md": """# Architecture Decisions
 
 Add numbered decision records only for choices that materially constrain later work.
 """,
-        "docs/LEGAL_HOSTING.md": f"""# Legal Hosting
-
-Public repository: "{spec['github']['owner']}/{repos['legal']}"
-
-Expected Pages URLs:
-
-- https://{spec['github']['owner'].lower()}.github.io/{repos['legal']}/
-- https://{spec['github']['owner'].lower()}.github.io/{repos['legal']}/privacy-policy.html
-- https://{spec['github']['owner'].lower()}.github.io/{repos['legal']}/user-agreement.html
-
-The public repository is generated from "docs/legal-source".
-""",
+        "docs/operations/legal-hosting.md": legal_hosting_doc(
+            spec["github"]["owner"], repos["legal"]
+        ),
+        "tools/README.md": tools_readme(),
+        "publishing/README.md": publishing_readme(),
     }
     for locale in app["androidLocales"]:
         folder = ANDROID_LOCALE_FOLDERS[locale]
@@ -1111,6 +1230,25 @@ def copy_gradle_wrapper(app_root: Path) -> None:
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source_path, destination)
     (app_root / "gradlew").chmod(0o755)
+
+
+def copy_repository_layout_assets(app_root: Path) -> None:
+    skill_root = Path(__file__).resolve().parents[1]
+    source = skill_root / "assets" / "repository-layout"
+    targets = {
+        "validate_layout.py": "tools/repository/validate_layout.py",
+        "tests/test_validate_layout.py": "tools/repository/tests/test_validate_layout.py",
+        "repository-layout.yml": ".github/workflows/repository-layout.yml",
+    }
+    for source_name, relative in targets.items():
+        source_path = source / source_name
+        if not source_path.is_file():
+            raise FactoryError(
+                f"bundled repository layout asset is missing: {source_path}"
+            )
+        destination = app_root / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source_path, destination)
 
 
 def initialize_git(repo: Path, commit_message: str) -> None:
@@ -1237,13 +1375,15 @@ def generate(args: argparse.Namespace) -> dict:
                 app_root,
                 relative,
                 content,
-                executable=relative == "scripts/sync_legal_site.py",
+                executable=relative
+                == "tools/publishing/legal/sync_to_legal_repo.py",
             )
         copy_gradle_wrapper(app_root)
+        copy_repository_layout_assets(app_root)
 
         for relative, content in generated_legal_files.items():
             write_text(legal_root, relative, content)
-            write_text(app_root / "docs" / "legal-source", relative, content)
+            write_text(app_root / "publishing" / "legal", relative, content)
 
         write_text(
             staging,

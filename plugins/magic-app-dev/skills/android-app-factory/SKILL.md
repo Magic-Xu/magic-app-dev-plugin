@@ -11,7 +11,7 @@ Create a locally coherent app workspace while preserving the two visibility boun
 
 Generate one parent workspace containing:
 
-- An Android repository with a minimal compiling Jetpack Compose shell, pulse MVI contract, design tokens, tests, documentation, and localized string resources.
+- An Android repository with a minimal compiling Jetpack Compose shell, pulse MVI contract, design tokens, tests, localized resources, and a repository information architecture with an automated layout gate.
 - A public-site repository with a product homepage, Privacy Policy, User Agreement, English and Simplified Chinese routes, and GitHub Pages files.
 - A private copy of the legal-site source plus a safe sync script, so the Android repository remains the source of truth and the public repository is a publishing target.
 
@@ -56,7 +56,7 @@ If a product sentence cannot be derived without inventing the app's purpose, sto
    - Omit "--magic-platform-version" for normal generation so the Factory-tested default is used.
    - The generator stages all files before moving the completed workspace into place.
 3. Validate with "scripts/validate_workspace.py".
-   - Always run structural validation.
+   - Always run structural validation, including the generated repository-layout validator and its contract tests.
    - Run `check`, Debug and Release APK builds, and the Release AAB when an Android SDK is available.
    - The validator may use `--platform-source` for local Factory acceptance only. Never persist that local path in a generated repository.
 4. Review legal accuracy.
@@ -70,7 +70,8 @@ If a product sentence cannot be derived without inventing the app's purpose, sto
 
 ## Important Boundaries
 
-- The bundled generator is the authoritative project template because the official Android CLI's built-in templates do not encode this repository's pulse, MVI, localization, legal-source, and paired-repository conventions.
+- The bundled generator is the authoritative project template because the official Android CLI's built-in templates do not encode this repository's pulse, MVI, localization, legal-publishing, and paired-repository conventions.
+- The Factory seeds each Android repository's own layout policy and CI gate because required sources and compatibility paths remain app-owned. Promote only proven cross-app invariants to Platform Quality; keep product-specific paths in the consumer app.
 - Android CLI may still be used for SDK, emulator, project inspection, and device QA. Do not invoke the deprecated SDK "tools/android" binary as the new Android CLI.
 - Never create public repositories containing Android source, secrets, signing material, local properties, internal specifications, or private product documents.
 - Never silently adopt an existing remote repository. Stop if a target remote name already exists and is not already the expected origin of the generated local repository.
@@ -90,6 +91,8 @@ Read [references/generated-layout.md](references/generated-layout.md) when chang
 - Only independent pages use the `XxxScreen` name and page contract; subordinate visual states use `XxxContent` or `XxxComponent`.
 - Platform quality checks are mandatory: consumers cannot disable dependency, feature-UI platform boundary, MVI, locale, package-path, or 400-line file-size rules.
 - User-visible Android strings exist in every generated Android locale.
+- The Android repository separates current documentation, editable design sources, executable tools, publishing inputs, release evidence, and generated output by lifecycle; its layout tests and validator pass locally and are wired into CI.
+- Canonical public-site and legal sources live under `publishing/legal`, outside product and engineering documentation.
 - The public repository contains no private app source or secrets.
 - Root English legal URLs and localized English and Simplified Chinese URLs exist.
 - When remote publishing is requested, repository visibility is verified and GitHub Pages is configured from "main" at "/".
