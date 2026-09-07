@@ -2,7 +2,7 @@
 
 [English](README.md) | 简体中文
 
-Magic App Dev 是一个用于独立 app 开发工作流的 Codex 插件，覆盖选题验证、产品与稳定性数据分析、Android/法律站点双仓工作区创建、本地优先 Android 开发、架构审查、Android 真机准备与 QA、改动自检、交付和 GitHub 发布流程。
+Magic App Dev 是一个用于独立 app 开发工作流的 Codex 插件，覆盖选题验证、产品与稳定性数据分析、Android/法律站点双仓工作区创建、本地优先 Android 开发、架构审查、Android 真机准备与 QA、改动自检、交付、GitHub 发布和 Google Play 版本发布准备。
 
 ## 安装
 
@@ -51,6 +51,7 @@ Skill 源码位于 `plugins/magic-app-dev/skills/`。
 | `app-change-self-check` | 交付前用具体证据检查 app 改动。 |
 | `app-end-to-end-delivery` | 将 Factory 工作区的任意需求路由到所属的 App、Platform 或 Factory 边界，再完成实现、验证与交付。 |
 | `github-pr-mainline-release` | 推送已验收改动、创建或复用 PR，按有 CI/无 CI 路径验证，在适用时 squash 合并、清理源分支并恢复 mainline。 |
+| `google-play-release` | 准备并上传经过验证的 AAB、生成各语言版本说明，判断商店无需更新／局部更新／全面更新，按需完成设计审查和控制台保存，最后送审及发布交由用户。 |
 
 ## 结构
 
