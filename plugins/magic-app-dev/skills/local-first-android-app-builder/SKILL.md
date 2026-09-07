@@ -41,7 +41,8 @@ existing sources, with open decisions clearly separated; do not duplicate a prod
 - Use [创建项目](../android-app-factory/SKILL.md) for a new paired Android/legal workspace.
 - Use [implementation delivery](../app-end-to-end-delivery/references/implementation-delivery.md) for an
   accepted implementation request. Architecture and MVI guidance belong to
-  [架构审查](../android-app-architecture-guardrails/SKILL.md), not a second copy in the product plan.
+  the release-review [architecture reference](../app-release-review/references/architecture-and-implementation.md);
+  reuse that guidance without starting a release audit during planning.
 
 A planning-only task ends with a concrete plan and decisions. An implementation request continues after
 product decisions and required design approval; do not reopen established scope or generate a new app

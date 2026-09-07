@@ -1,6 +1,6 @@
 {
   "name": "magic-app-dev",
-  "version": "0.4.2+codex.20260907235648",
+  "version": "0.5.0+codex.20260907164021",
   "description": "Reusable Codex skills for independent app development and operations.",
   "author": {
     "name": "Magic Xu",
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Magic App Dev",
     "shortDescription": "\u4ece\u9700\u6c42\u8c03\u7814\u5230 Android \u5f00\u53d1\u3001\u5546\u5e97\u53d1\u5e03\u4e0e\u6301\u7eed\u8fed\u4ee3\u3002",
-    "longDescription": "Magic App Dev provides twelve reusable workflows for demand research, product planning, design approval, paired Android/legal workspace creation, implementation, architecture and whole-version review, device QA, mainline integration, first Google Play launch and updates, product analytics, stability diagnosis and iteration outcome verification. Project facts remain app-owned; store submission and publication remain owner-controlled by default.",
+    "longDescription": "Magic App Dev provides reusable workflows for demand research, product planning, design approval, paired Android/legal workspace creation, implementation, whole-release review and repair, device QA, mainline integration, first Google Play launch and updates, product analytics, stability diagnosis and iteration outcome verification. Release review reconciles cumulative requirements, feature interactions, architecture and evidence; project facts remain app-owned and publication remains owner-controlled by default.",
     "developerName": "Magic Xu",
     "category": "Productivity",
     "capabilities": [
@@ -31,7 +31,7 @@
     ],
     "defaultPrompt": [
       "\u5224\u65ad\u5f53\u524d\u4ea7\u54c1\u9636\u6bb5\u5e76\u5b8c\u6210\u8fd9\u6b21\u5f00\u53d1\u6216\u8fed\u4ee3\u3002",
-      "\u6c47\u603b\u672c\u7248\u672c\u5168\u90e8\u529f\u80fd\uff0c\u5ba1\u67e5\u67b6\u6784\u504f\u79fb\u3001\u6587\u6863\u4e00\u81f4\u6027\u4e0e\u56de\u5f52\u8bc1\u636e\u3002",
+      "Google Play \u4e0a\u67b6\u524d\u5168\u76d8\u5ba1\u67e5\u672c\u7248\u672c\uff0c\u4fee\u590d\u6709\u8bc1\u636e\u7684\u95ee\u9898\u5e76\u6e05\u7406\u786e\u5b9a\u8fc7\u65f6\u7684\u5185\u5bb9\uff0c\u9a8c\u8bc1\u53d1\u5e03\u6761\u4ef6\uff0c\u5c06\u4e0d\u786e\u5b9a\u9879\u6c47\u603b\u8ba9\u6211\u51b3\u5b9a\u3002",
       "\u51c6\u5907 Google Play \u53d1\u7248\u5e76\u8bc4\u4f30\u5546\u5e97\u66f4\u65b0\uff0c\u505c\u5728\u6211\u9001\u5ba1\u4e4b\u524d\u3002"
     ],
     "brandColor": "#2563EB"
