@@ -1,6 +1,9 @@
 # App Product Analytics Metric Catalog
 
-Use this catalog to keep recurring reports comparable. “Baseline” means the row must appear in a full operating review even when the result is zero, unavailable, suppressed, delayed, or not instrumented.
+Use this catalog to keep full and recurring operating reviews comparable. “Baseline” means the row must appear in
+a full review even when the result is zero, unavailable, not applicable, suppressed, delayed, or not instrumented.
+For focused analyses, use only the sections needed for the question and its interpretation; expand when evidence
+requires it. Reuse matching source, population, filter, and window evidence across contributing analyses.
 
 Authoritative definitions should be rechecked when console labels or platform policies change. The links below were verified on 2026-08-30.
 
@@ -91,7 +94,8 @@ Avoid slicing a small sample until every segment is noise. Record privacy suppre
 
 ## Interpretation Order
 
-Analyze in this order so downstream outcomes are not mistaken for root causes:
+For a full review, the following path helps connect downstream outcomes with possible causes. For a focused
+question, start with the requested metric and follow the evidence to the relevant upstream or downstream behavior:
 
 1. Distribution: listing visitors, conversion, first-time users.
 2. Activation: first meaningful value completion.

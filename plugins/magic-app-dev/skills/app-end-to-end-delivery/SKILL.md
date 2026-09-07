@@ -22,15 +22,14 @@ This skill coordinates delivery; it is not a feature generator or a product fram
   at least two maintained real apps share its semantics, lifecycle, and test contract.
 - Do not create empty layers, placeholder abstractions, or parallel `Screen`, Contract, and ViewModel files
   merely to make a change resemble a template.
-- Do not start PR, merge, branch deletion, release, store upload, or deployment work without explicit user
-  instruction. Implementation, validation, packaging, or approval of local behavior does not imply it.
+- Push, PR, merge, branch deletion, release, store upload, and deployment require the user's corresponding
+  instruction. Reuse existing authorization and use the dedicated workflow for the requested external operation.
 
 ## Establish The Delivery Target
 
 Establish the accepted behavior, its owner, affected boundaries and the evidence needed to show it works.
-Inspect nearby code and the current diff; consult requirements, engineering docs, decisions and validation
-commands when they govern the change or resolve uncertainty. Reuse current task context rather than
-re-reading a fixed document list.
+Inspect nearby code and the current diff; consult governing requirements, engineering docs, decisions, and validation
+commands as needed. Reuse current task context.
 
 For a defect, fix the violated behavior or invariant within the requested scope. Ask when missing
 information changes product meaning, permissions, data handling or the deliverable; continue independent
@@ -126,49 +125,30 @@ under the feature by association. Do not create a persistent file when its reade
   quality and deliverable. If recovery from failure would change those boundaries, explain the cause and
   impact and ask before changing them; continue independent authorized work.
 
-## Validate By Risk
+## Validate And Complete
 
-Run the narrowest check that can fail for the changed behavior, then broaden until the affected integration
-boundary is covered. Applicable repository-mandated checks remain mandatory. Reuse evidence already valid
-for the current relevant code and environment; rerun after relevant changes, failures or unresolved risks.
-Use `$app-change-self-check` if evidence selection needs further guidance, as part of this validation pass.
-For documentation-only edits, validate the changed content and links; run app checks when executable
-instructions or behavior are affected. The table lists candidate evidence for the affected behavior; select
-what is sufficient for the change. Factory initialization retains its full acceptance requirements.
+Choose enough evidence for the affected behavior and complete repository-mandated checks. Reuse results valid for
+current relevant inputs; rerun after changes, failures, or unresolved concerns. Use `$app-change-self-check` when
+selecting evidence or assessing a gap needs guidance, within this same validation and final-review pass.
 
-| Change | Primary evidence | Broaden when |
-| --- | --- | --- |
-| Stateful feature UI | State, reducer, or ViewModel tests; Compose/UI behavior test; affected compile target | Run Platform Quality and Lint for structure/resources; use a device for real interaction or lifecycle; build an APK when installation or packaged integration matters |
-| Pure domain rule | Focused pure Kotlin unit tests and affected module compile | Run dependency/quality checks when packages or module edges changed; no APK, AAB, or device proof solely for isolated logic |
-| Android or IO gateway | Contract/unit tests for deterministic behavior; Android integration or instrumentation proof for the real boundary; affected compile target | Run Lint for APIs, resources, permissions, or manifest changes; use a device for OS/provider/lifecycle semantics; package when runtime integration requires it |
-| Cross-feature orchestration | Effect-handler, route, or coordinator tests plus an integration path across the involved features | Run Platform Quality to prove feature isolation; use a device when navigation, process, or lifecycle behavior is material |
-| Platform engineering | Plugin or quality-rule tests and executable consumer contracts or smoke builds | Validate a maintained real consumer and Factory generation when compatibility or the generated baseline changes |
-| Factory initialization | Generator dry run, structural validation, clean generated Git boundaries, and the Factory's full generated-app check | Build Debug/Release APK and Release AAB as required by Factory acceptance; use a device only for product behavior added beyond the starter |
+| Affected boundary | Candidate evidence and when to broaden |
+| --- | --- |
+| Feature UI or app orchestration | State/effect and interaction evidence; affected compilation. Add device or lifecycle proof when real navigation, rendering, or recreation matters. |
+| Pure domain rule | Focused pure Kotlin behavior tests and affected compilation; dependency/quality checks when packages or module edges change. |
+| Android or IO gateway | Deterministic contract tests plus real provider, permission, persistence, or lifecycle evidence for the changed boundary; relevant Android compilation and lint. |
+| Platform engineering | Plugin/quality-rule tests and consumer contracts or smoke builds. Cover a maintained consumer and Factory generation when compatibility or the generated baseline changes. |
+| Factory initialization | The Factory's full generator, layout, Git-boundary, `check`, Debug/Release APK, and Release AAB acceptance flow. |
+| Documentation | Changed content, links, and reader path; execute app checks when changed executable instructions or behavior require them. |
 
-In Factory-generated apps, do not disable or relax Platform Quality. Use the repository's exact task names;
-`check`, Lint, compile, APK, AAB, and device validation are distinct evidence and are not interchangeable.
-A screenshot is only visual evidence unless the recorded interaction covers the accepted path and resulting
-state. If a required proof needs unavailable credentials, network, SDK, or hardware, run the remaining valid
-checks and report the gap precisely.
+Platform Quality remains mandatory in Factory apps. Use the repository's task names and required gates. Outside
+Factory initialization or an explicit packaging deliverable, select APK/AAB builds when packaged integration is part
+of the evidence needed. A screenshot alone proves appearance; accepted interactions and outcomes need corresponding
+behavioral evidence. Run independent valid checks and identify precise gaps when required infrastructure is unavailable.
 
-## Review And Hand Off
+Inspect the final diff and status for ownership, contracts, dependencies, resources/permissions, secrets, local paths,
+generated outputs, and unrelated changes. Integrate any required artifact-boundary review here. Report changed behavior,
+material ownership choices, validation evidence, applicable package/device status, and remaining limitations.
 
-Before delivery:
-
-1. Inspect the final diff and `git status --short --branch`; exclude build outputs, local paths, credentials,
-   temporary evidence, and unrelated changes.
-2. Confirm the changed behavior has the right owner, dependencies and evidence using the final diff.
-3. Perform any repository-required artifact-boundary review. Keep persistent artifacts focused on the final
-   behavior and durable constraints rather than rejected approaches or agent work history.
-4. Report changed behavior and its owning boundary, the reason for that route, commands and evidence that
-   passed, packaging or device status when applicable, and any unverified risk.
-
-Continue through implementation, relevant validation, result inspection and repair of defects introduced
-by the task. Stop at the agreed deliverable or a genuine blocker requiring user input or external change.
-Do not claim CI, PR, merge, release, or production completion unless it actually happened.
-
-## Delivery Escalation
-
-Only after an explicit request to push, create a PR, merge, release, or clean branches, re-check remote state
-and use the repository's dedicated release or mainline skill when available. Keep that workflow separate from
-local requirement delivery.
+Continue through implementation, validation, result inspection, and repair of task-caused defects until the agreed
+deliverable is complete or a genuine blocker needs user input or external change. For an already requested external
+operation, continue with its dedicated workflow and current remote state. Claim only completion that was verified.

@@ -44,7 +44,7 @@ Skill 源码位于 `plugins/magic-app-dev/skills/`。
 | `app-product-analytics` | 分析真实的获客、当前安装用户、活跃、留存、产品漏斗、变现、商店转化和顶层质量数据，并交付经过校验的飞书分析文档。 |
 | `app-stability-analysis` | 使用 Firebase Crashlytics 和应用商店质量数据诊断 Crash、非致命错误、ANR、回归与版本稳定性，并交付经过校验的飞书分析文档。 |
 | `android-app-factory` | 创建私有 Android 仓库与公开 GitHub Pages 法律站点仓库组成的双仓工作区。 |
-| `local-first-android-app-builder` | 规划、启动或审查本地优先 Android app。 |
+| `local-first-android-app-builder` | 明确本地优先 Android 产品的范围、数据边界与项目约定，再进入工作区创建或实现。 |
 | `android-app-architecture-guardrails` | 约束 Android 代码的 MVI、Compose、资源和验证门禁。 |
 | `android-device-keep-awake` | 在明确指定的长程开发任务中，按实际供电类型让一台已连接 Android 真机持续亮屏。 |
 | `android-instrumentation-qa-guardrails` | 用可复现的 adb/instrumentation 证据验证 Android UI 流程。 |

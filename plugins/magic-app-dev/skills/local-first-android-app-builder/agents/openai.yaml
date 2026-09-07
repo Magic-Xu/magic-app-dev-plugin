@@ -1,4 +1,4 @@
 interface:
   display_name: "Local-first Android Builder"
-  short_description: "Bootstrap focused Android apps with agent guardrails"
-  default_prompt: "Use $local-first-android-app-builder to bootstrap a focused Android app with clear scope, architecture, and validation rules."
+  short_description: "Define local-first Android scope and data boundaries"
+  default_prompt: "Use $local-first-android-app-builder to define this Android app's core user loop, V1 scope, and data boundaries, then continue into the requested work."

@@ -44,7 +44,7 @@ Skill source lives in `plugins/magic-app-dev/skills/`.
 | `app-product-analytics` | Analyze live acquisition, installed audience, activity, retention, product funnels, monetization, store conversion, and top-level quality, then deliver a verified Lark report. |
 | `app-stability-analysis` | Diagnose live crashes, non-fatal errors, ANRs, regressions, and release stability, then deliver a verified Lark report. |
 | `android-app-factory` | Create a paired private-ready Android repository and public-ready GitHub Pages legal repository. |
-| `local-first-android-app-builder` | Plan, bootstrap, or review focused local-first Android apps. |
+| `local-first-android-app-builder` | Define local-first Android product scope, data boundaries, and project choices before workspace creation or implementation. |
 | `android-app-architecture-guardrails` | Keep Android code modular across MVI, Compose, resources, and validation gates. |
 | `android-device-keep-awake` | Keep one connected Android device awake on its active charging source during an explicitly requested long development task. |
 | `android-instrumentation-qa-guardrails` | Validate Android UI flows with reproducible adb/instrumentation evidence. |

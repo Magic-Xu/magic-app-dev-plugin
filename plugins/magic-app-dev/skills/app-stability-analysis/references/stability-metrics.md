@@ -14,6 +14,10 @@ Record the following before interpreting a chart:
 
 ## Baseline Metrics
 
+Collect all Baseline rows for a full stability review, retaining unavailable or insufficient data with reasons.
+For a focused issue or a contribution to another analysis, select the relevant metrics and context; broaden when
+needed to support the verdict. Reuse existing evidence with matching source, population, filters, and window.
+
 | Priority | Metric | Meaning | Source | Guardrail |
 | --- | --- | --- | --- | --- |
 | Baseline | Crash-free users | `1 - crashed users / all engaged users` for the selected period. A Crashlytics user is an app installation on a device. | Firebase Crashlytics | Fatal crashes only. It is aggregated over the selected window; longer windows naturally tend to be lower. |

@@ -1,126 +1,50 @@
 ---
 name: local-first-android-app-builder
-description: Use when starting, structuring, implementing, or reviewing a focused Android app where local-first behavior, clear V1 scope, Jetpack Compose UI, MVI contracts, pulse state management, resource/i18n hygiene, platform-boundary control, and AI-friendly engineering guardrails matter. Trigger for Android app bootstrapping, page creation, feature planning, architecture review, or repo agent rule creation.
+description: Define or review a local-first Android product's core user loop, V1 scope, data boundaries, and project-specific engineering choices before implementation or workspace creation.
 ---
 
 # Local-first Android App Builder
 
-## Core Rule
+Turn an app idea into a small, complete user loop with explicit data and operating-cost boundaries. Use this
+skill for product planning and project kickoff; reuse accepted decisions when work continues in an existing app.
 
-Start from the product's smallest complete user loop, not from a generic app template.
+## Establish The Product Boundary
 
-Before editing code, identify:
+Resolve only what the current decision needs:
 
-- Product sentence: what the app does for whom.
-- V1 loop: the shortest complete path from user intent to value delivered.
-- Explicit non-goals: features that must not be added without confirmation.
-- System capabilities: picker, camera, file IO, share, billing, ads, analytics, etc.
-- Data sensitivity: what must stay local, what can leave the device, and what must never be logged.
+- Who the app serves, the job it completes, and the path from user intent to a useful result.
+- What belongs in the requested version and which plausible expansions are outside it.
+- Required system capabilities such as picking, capture, storage, sharing, billing, or analytics.
+- Which data stays on-device, what may be exported or transmitted, and what must never be logged.
+- Offline behavior and acceptable ongoing server or vendor costs.
 
-If the user's goal or scope is unclear, stop and ask. Do not invent a broad app.
+Use the user's requirements and relevant product or engineering context already available. Ask when missing
+information changes product meaning, permissions, data handling, or the deliverable; continue independent work.
+Routine implementation details can be resolved from the repository's patterns without reopening accepted scope.
 
-## Required Reading
+## Make Project-Specific Choices
 
-When available in the target repository, read these before changing files:
+- Keep the core loop usable independently of analytics, advertising, and monitoring. Treat network-dependent
+  features according to the agreed offline behavior rather than assuming every feature must work offline.
+- Keep sensitive content out of logs and telemetry. When adding a collecting SDK, align the actual data flow,
+  privacy documentation, and required store declarations before publication.
+- Extend established state and platform ownership. Use the repository's MVI and Pulse conventions where required;
+  only independently stateful pages need their own page contract and state holder.
+- Add packages, modules, gateways, or shared components when behavior, ownership, reuse, or testability needs them.
+  Preserve repository-enforced quality rules, resource localization, and design tokens.
 
-- `AGENTS.md`
-- `docs/product/`
-- `docs/design/`
-- `docs/engineering/`
-- `docs/decisions/`
-- Nearby feature files and existing page templates
+Record decisions in existing product or engineering documents when maintainers need them. Create a new document
+only for a distinct reader and purpose.
 
-If this package was copied into the repo, also read:
+## Continue Into The Requested Work
 
-- `docs/engineering/android-app-bootstrap-playbook.md`
-- `docs/engineering/architecture-guardrails.md`
-- `docs/engineering/mvi-pulse-compose-pattern.md`
-- `docs/engineering/validation-checklist.md`
+- For kickoff scope and artifact placement, consult [references/bootstrap-checklist.md](references/bootstrap-checklist.md).
+- For page state and effect ownership, consult [references/mvi-pulse-compose.md](references/mvi-pulse-compose.md).
+- When creating or reviewing repository rules, consult [references/repo-rules-template.md](references/repo-rules-template.md).
+- For a new Magic Android workspace, use `$android-app-factory` and its authoritative generator and acceptance flow.
+- For implementation in a Magic Android Factory workspace, use `$app-end-to-end-delivery`. In other repositories,
+  follow their delivery conventions; use `$android-app-architecture-guardrails` or `$app-change-self-check` when a
+  boundary or validation choice needs further guidance.
 
-Use the reference files in this skill only when the matching task appears:
-
-- Product or project kickoff: `references/bootstrap-checklist.md`
-- New page or state-flow work: `references/mvi-pulse-compose.md`
-- Repo rule creation or review: `references/repo-rules-template.md`
-
-## Workflow
-
-1. Confirm branch and write boundary.
-   - Do not edit code, resources, generated assets, or engineering docs on `main` or `master`.
-   - If already on a relevant feature branch, continue there.
-   - If on `main` or `master`, create a task branch before edits.
-
-2. Define scope before implementation.
-   - Write the V1 included and excluded lists.
-   - Prefer one complete core loop over many partial features.
-   - Challenge requested expansions when they are not needed for the loop.
-
-3. Establish architecture boundaries.
-   - `ui`: Compose rendering and event dispatch only.
-   - `contract`: public page state, intents, effects, UI-facing enums.
-   - `presentation`: ViewModel, reducer, state mapping, effect emission.
-   - `domain`: pure rules, models, algorithms, render engines.
-   - `data` or platform gateways: SDK calls, file IO, pickers, permissions, sharing.
-   - `core/designsystem`: tokens and theme.
-   - `core/ui`: reusable UI primitives.
-   - `core/common`: business-agnostic helpers.
-
-4. Create page contracts before UI behavior.
-   - Define `XxxContract`, `XxxState`, `XxxIntent`, `XxxEffect`, and `XxxViewModel`.
-   - Use pulse for state management when the repo standard requires it.
-   - Model navigation, picker launch, save, share, toast, and external intents as effects or app-level effect handling.
-
-5. Keep Compose pure.
-   - Composables receive state and callbacks.
-   - Do not place business decisions, navigation decisions, SDK calls, file reads/writes, or image processing in Composables.
-   - Split large screens by role: route/shell, top bar, content, controls, sheet/dialog, rows.
-
-6. Resource and design hygiene.
-   - Put all user-visible strings in Android resources.
-   - Update every supported locale together.
-   - Use design tokens for colors, typography, spacing, radius, and component sizes.
-   - Add narrow tokens before scattering repeated literals.
-
-7. Platform and privacy boundaries.
-   - Wrap system capabilities behind gateways or app-level coordinators.
-   - Do not log sensitive data such as image URI, filename, user text, email, exact location, or raw content.
-   - Analytics, ads, and monitoring are side channels; they must not block the core loop.
-   - If adding SDKs that collect data, update privacy docs and store console declarations.
-
-8. Validate narrowly before handoff.
-   - Run the smallest useful compile/test command.
-   - Search for hardcoded UI text and direct platform calls in UI.
-   - Check large Kotlin/Compose files and split if responsibility is mixed.
-   - Report what changed, why, what ran, and residual risk.
-
-## Page Contract Pattern
-
-Use this shape unless the target repo already has a stricter template:
-
-```kotlin
-data class ExampleState(
-    val isLoading: Boolean = false,
-)
-
-sealed interface ExampleIntent {
-    data object OnPrimaryClick : ExampleIntent
-}
-
-sealed interface ExampleEffect {
-    data object NavigateBack : ExampleEffect
-}
-```
-
-Prefer specific intent names such as `OnSaveClick`, `OnImagePicked`, `OnStrengthChanged`. Avoid vague names such as `UpdateData`, `HandleAction`, or `DoSomething`.
-
-## Review Checklist
-
-- Is the V1 loop explicit and smaller than the wish list?
-- Are non-goals written down?
-- Are UI, state, domain, and platform responsibilities separated?
-- Is each page contract defined before behavior is added?
-- Are all user-visible strings resource-backed and localized?
-- Are visual values tokenized?
-- Are system calls outside Composables?
-- Are sensitive values excluded from logs, analytics, crashes, and backups?
-- Did validation run, and are skipped checks explained?
+Load only the guidance needed for that next step. If implementation is already requested, continue into it after
+resolving the product boundary; a completed plan is the deliverable only when the user requested planning.

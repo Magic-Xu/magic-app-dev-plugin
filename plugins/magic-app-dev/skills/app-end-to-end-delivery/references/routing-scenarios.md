@@ -1,7 +1,8 @@
 # Requirement Routing Scenarios
 
 Use these scenarios to test routing decisions, not as code templates. Adapt names and exact test commands to
-the target repository.
+the target repository. Validation examples are candidate evidence for the affected behavior. Select checks that
+cover the accepted risk, preserve repository-mandated gates, and reuse results valid for the current inputs.
 
 ## Stateful UI Inside An Existing Feature
 
@@ -16,8 +17,9 @@ the target repository.
   APIs directly. No sibling feature dependency is introduced.
 - **Deliberately absent:** No new `Screen`, page Contract, ViewModel, navigation route, empty domain layer, or
   gateway is created for the panel itself.
-- **Risk-matched validation:** Run focused state/reducer tests, Compose UI behavior tests, Platform Quality,
-  Lint, and the affected compile target. Exercise cancel and retry on a device when coroutine cancellation,
+- **Risk-matched validation:** Use focused state/reducer and Compose behavior evidence plus affected compilation.
+  Run Platform Quality and Lint when required by repository policy or affected structure/resources. Exercise cancel
+  and retry on a device when coroutine cancellation,
   activity lifecycle, or real rendering is part of acceptance. An APK is needed only when installed behavior
   or packaged integration must be proven; an AAB is not evidence for the state transitions.
 
@@ -53,8 +55,9 @@ retention policy.
   sibling feature.
 - **Deliberately absent:** No new page or page MVI skeleton is created for the export operation, and the gateway
   does not contain navigation or product UI state.
-- **Risk-matched validation:** Run serialization and failure-path unit tests, the Android boundary test,
-  Platform Quality, Lint, and affected compilation. Use an emulator or device to prove provider selection,
+- **Risk-matched validation:** Use serialization and failure-path tests, Android boundary evidence, and affected
+  compilation. Run Platform Quality and Lint for required gates and changed platform/resource boundaries. Use an
+  emulator or device to prove provider selection,
   cancellation, write failure, URI access, and reopen behavior when those OS semantics are accepted behavior.
   Build an APK when that device path or packaged manifest integration must be tested; build an AAB only when
   release packaging is in scope.
@@ -73,7 +76,7 @@ retention policy.
   neither feature contains the app router. Domain or core never imports a feature.
 - **Deliberately absent:** No duplicate root Store containing both feature states, no feature-to-feature helper,
   no new screen for the transition, and no core gateway when the flow has no system side effect.
-- **Risk-matched validation:** Run feature outcome tests, app handler or route tests, Platform Quality, Lint or
-  compile checks for affected Android sources, and an integration or device flow from completion through the
+- **Risk-matched validation:** Use feature outcome and app handler/route evidence, affected compilation, and required
+  quality gates. Add Lint for affected Android APIs/resources and an integration or device flow from completion through the
   focused Library state. APK installation is appropriate when process/lifecycle or packaged navigation is in
   scope; AAB generation is reserved for release-packaging risk or an explicit deliverable.

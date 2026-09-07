@@ -1,84 +1,32 @@
-# MVI + Pulse + Compose Pattern
+# MVI, Pulse, And Compose Ownership
 
-Use this reference when creating or changing a page.
+Use when deciding page state and effect ownership. The target repository's working implementation and enforced
+contracts are authoritative for exact Pulse APIs, names, and required artifacts.
 
-## Contract First
+## Page Or Component
 
-Create or update the contract before UI behavior:
+An independent page owns its public state, user intents, effects, and state holder under the repository's MVI
+pattern. Update the contract with the changed behavior. A panel, dialog, loading state, or other subordinate UI
+normally extends its existing feature owner instead of gaining a second page contract or ViewModel.
 
-- `XxxContract.kt`
-- `XxxState`
-- `XxxIntent`
-- `XxxEffect`
+Factory-generated apps use feature-owned Pulse Stores, typed mutations, reducers, and ViewModels. Independent
+pages use `XxxScreen`; subordinate visual states use `XxxContent` or `XxxComponent`. Follow the generated examples
+for API usage instead of introducing a second state-management pattern.
 
-State is for durable rendering data. Effect is for one-time commands.
+## State And Effects
 
-Good state:
+- State represents rendering facts such as selection, progress, form values, errors, and undo availability.
+- Intents name the user's action or relevant external result precisely, such as `OnSaveClick` or `OnImagePicked`.
+- Reducers or state holders own transitions. Domain logic belongs in domain rules; Android and IO behavior
+  belongs behind the repository's platform gateways.
+- Effects represent one-time commands such as navigation, picker launch, sharing, or a message. Route or
+  app-level coordinators handle them using the existing lifecycle convention.
+- Low-level Composables render state and dispatch events; they do not perform repository mutations or SDK/IO work.
 
-- selected item
-- loading flag
-- error state that affects rendering
-- form values
-- undo/redo availability
+## Structure And Validation
 
-Good effects:
+Extract components when responsibilities, reuse, or testability justify them. File length is a review signal;
+enforced repository limits still apply, including the Factory Platform's production Kotlin limit.
 
-- navigate
-- open system picker
-- launch share sheet
-- show toast/snackbar
-- request permission
-
-## ViewModel
-
-The ViewModel:
-
-- receives intents
-- updates pulse state
-- calls use cases or gateways
-- emits effects
-- coordinates asynchronous work
-
-The ViewModel should not draw UI, hold Compose-only state, or directly duplicate platform code that belongs in a gateway.
-
-## Compose
-
-Composable functions:
-
-- collect state
-- render UI
-- dispatch intents
-
-Do not call SDKs, filesystems, repositories, or navigation APIs directly from low-level UI components. Route/shell components may collect effects and hand them to app-level coordinators when that is the repo pattern.
-
-## Naming
-
-Prefer:
-
-- `OnSaveClick`
-- `OnPickerDismiss`
-- `OnImagePicked`
-- `OnModeSelected`
-- `OnStrengthChanged`
-
-Avoid:
-
-- `UpdateData`
-- `HandleClick`
-- `DoAction`
-- `Process`
-
-## Splitting Rule
-
-Split screens by responsibility:
-
-- route/effect collector
-- screen composition
-- top bar
-- main content
-- control panel
-- bottom bar
-- sheet/dialog
-- row/card/chip components
-
-Files over 400 lines are review hotspots. Files over 800 lines should be split before completion unless the repository has a different hard threshold.
+Verify changed transitions and effect handling with the task's validation plan. Use device or recreation evidence
+when lifecycle semantics matter; a routine visual edit does not require rebuilding the entire page architecture.

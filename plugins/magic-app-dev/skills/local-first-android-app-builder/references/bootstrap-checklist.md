@@ -1,61 +1,41 @@
-# Android App Bootstrap Checklist
+# Android App Kickoff
 
-Use this reference when starting a new Android app or turning a product idea into a buildable V1.
+Use when turning a product idea into a buildable V1. Reuse accepted product facts and the target repository's
+layout; this reference does not prescribe files that every app must create.
 
-## 1. Product Boundary
+## Product And Data Decisions
 
-Write these before code:
+Describe the user, job, shortest complete loop, required capabilities, and meaningful scope exclusions.
+Identify local storage, export, network transmission, telemetry, and deletion behavior for the data involved.
+Choose acceptance evidence for the loop and its most consequential failure paths.
 
-- Product sentence: `[App] helps [user] do [job] with [constraint or differentiator].`
-- Core loop: `open -> act -> result -> next action`.
-- V1 includes: only the smallest complete loop.
-- V1 excludes: tempting features that would expand scope.
-- Sensitivity model: local data, export data, logged data, network data.
+Start with the largest uncertainty that can change feasibility or product value. A platform capability spike,
+domain prototype, or UI flow may each be the appropriate first step. Add monetization, accounts, cloud sync,
+or automation when the accepted loop requires them.
 
-If the includes list does not form a complete loop, shrink or reorder it. If the excludes list is empty, the scope is probably not real yet.
+## Artifact Placement
 
-## 2. First Documents
+Update the existing authoritative documents. In Factory workspaces, follow the generated layout contract:
 
-Create or update:
+| Purpose | Location |
+| --- | --- |
+| Current product scope and behavior | `docs/product/` |
+| Current engineering and validation rules | `docs/engineering/` |
+| Operator procedures | `docs/operations/` |
+| Durable architectural decisions | `docs/decisions/` |
+| Editable visual sources and design previews | `design/` |
+| Executable helpers | `tools/` |
+| Legal, store, and website publishing inputs | `publishing/` |
+| Reproducible screenshots, logs, and build output | ignored `build/` |
 
-- `docs/product/v1-requirements.md`
-- `docs/product/v1-development-tasks.md`
-- `docs/design/ui-preview.*` or a design tool link
-- `docs/engineering/architecture.md`
-- `docs/engineering/development-rules.md`
-- `docs/engineering/testing-rules.md`
-- `docs/decisions/README.md`
-- `AGENTS.md`
+Keep repository-wide agent instructions in `AGENTS.md`, linking to maintained sources when needed. Do not create
+parallel copies of requirements or engineering rules. Existing repositories may have different valid layouts;
+do not migrate them as a side effect of product planning.
 
-Do not scatter product docs, design files, logo sources, or generated assets at repository root.
+## Workspace Creation
 
-## 3. Recommended Package Boundaries
+For Magic Android workspaces, use `$android-app-factory`. Its generator owns the paired repositories, Platform
+baseline, locale set, layout gate, and initial build acceptance. Do not reproduce its template here.
 
-Start with packages before splitting Gradle modules:
-
-- `app`
-- `core/designsystem`
-- `core/ui`
-- `core/common`
-- `core/navigation`
-- `core/media`
-- `feature/<feature>/contract`
-- `feature/<feature>/presentation`
-- `feature/<feature>/domain`
-- `feature/<feature>/data`
-- `feature/<feature>/ui`
-
-Split Gradle modules only when build speed, ownership, reuse, or dependency boundaries justify the cost.
-
-## 4. Phase Order
-
-Prefer this order:
-
-1. Engineering base: dependency versions, app shell, theme, navigation, MVI pattern, test command.
-2. Main loop UI: static but realistic screens wired to state.
-3. Platform gateways: picker, camera, save, share, external navigation, permissions.
-4. Domain engine: business rules, algorithms, renderers, storage, network.
-5. Persistence and release surfaces: settings, legal pages, analytics, ads, monitoring.
-6. Store readiness: privacy declarations, screenshots, release checklist.
-
-Avoid starting with monetization, accounts, cloud sync, automation, or batch workflows unless they are part of the core loop.
+For an existing app, extend the established structure. Split Gradle modules when build speed, ownership, reuse,
+or dependency enforcement justifies the cost. Add only the state and platform boundaries needed by the core loop.
