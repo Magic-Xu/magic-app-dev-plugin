@@ -1,6 +1,6 @@
 ---
 name: app-end-to-end-delivery
-description: Use as the unified delivery entry for requirements and bug fixes in Magic Android App Factory workspaces, including stateful UI, domain logic, Android or IO gateways, cross-feature orchestration, shared Platform engineering, and new product initialization. Route work to the owning boundary before implementing, then validate and hand it off with evidence. Do not use it to push, open PRs, merge, release, or deploy unless the user explicitly asks for those actions.
+description: Implement and validate app, Platform, or Factory requirements in Magic Android App Factory workspaces, routing changes to their owning boundary.
 ---
 
 # App End-to-End Delivery
@@ -8,8 +8,8 @@ description: Use as the unified delivery entry for requirements and bug fixes in
 ## Outcome
 
 Turn an app requirement into the smallest complete set of correctly owned changes and enough evidence
-to show the accepted behavior works. Route the requirement before choosing files or templates. Follow the
-target repository's rules when they are stricter.
+to show the accepted behavior works. Apply the target repository's relevant engineering contracts; user
+instructions take precedence over this skill's guidance. Reuse context and evidence from the active task.
 
 This skill coordinates delivery; it is not a feature generator or a product framework.
 
@@ -27,26 +27,18 @@ This skill coordinates delivery; it is not a feature generator or a product fram
 
 ## Establish The Delivery Target
 
-Before editing:
+Establish the accepted behavior, its owner, affected boundaries and the evidence needed to show it works.
+Inspect nearby code and the current diff; consult requirements, engineering docs, decisions and validation
+commands when they govern the change or resolve uncertainty. Reuse current task context rather than
+re-reading a fixed document list.
 
-1. Read `AGENTS.md`, the root and documentation indexes, the requirement baseline, relevant engineering
-   docs and decisions, nearby code and tests, CI or validation commands, and `git status --short --branch`.
-2. Express the requested result as observable behavior, non-functional constraints, and evidence that can
-   prove it. For a defect, identify the violated ownership or invariant instead of patching only the symptom.
-3. Inspect how the target app already represents the same kind of state, rule, gateway, or orchestration.
-   Existing names are evidence, not authority when they violate repository rules.
-4. Ask only when missing information changes product meaning, permissions, data handling, or the deliverable.
-   Otherwise make the narrowest evidence-backed assumption and continue.
+For a defect, fix the violated behavior or invariant within the requested scope. Ask when missing
+information changes product meaning, permissions, data handling or the deliverable; continue independent
+work while awaiting that answer. Otherwise make an evidence-backed decision and proceed.
 
-Keep a concise route map in the conversation or task notes unless the repository explicitly requires a
-design artifact:
-
-| Concern | Semantic owner | Minimum artifact | Allowed dependency | Proof |
-| --- | --- | --- | --- | --- |
-| One behavior or constraint | One owning layer | Only what behavior needs | Higher layer to lower layer | Risk-matched evidence |
-
-For every row, explain why that owner holds the semantic decision. A requirement may span several rows,
-but each row must retain only its layer's meaning.
+A short route map is useful when ownership spans multiple boundaries or is unclear. For each concern,
+identify the owner, minimum change, dependency direction and proof. Keep this reasoning in the conversation
+unless a persistent design artifact is needed by maintainers.
 
 ## Route By Semantic Owner
 
@@ -86,12 +78,11 @@ what every newly generated workspace must contain; do not use it to update an ex
 - Reuse existing helpers and contracts when their semantics match. Do not add an otherwise unused layer or
   product-specific exception to satisfy structural symmetry or a quality gate.
 
-Load `$android-app-architecture-guardrails` when Android implementation or review touches architecture,
-state flow, Compose, resources, platform calls, or long-term maintainability. Apply its page-specific MVI
-rules only to independently stateful pages, not to domain, gateway, app orchestration, or subordinate UI
-work.
+Use `$android-app-architecture-guardrails` when state, side-effect ownership or module boundaries need
+additional architectural judgment. Reuse its relevant guidance if already loaded; ordinary edits within
+an established boundary do not require a separate architecture pass.
 
-For realistic routing examples and acceptance expectations, read
+If the correct owner or acceptance evidence is unclear, consult the relevant example in
 [references/routing-scenarios.md](references/routing-scenarios.md).
 
 ## Place Persistent Artifacts By Meaning
@@ -123,21 +114,27 @@ under the feature by association. Do not create a persistent file when its reade
 - Implement the root behavior in its owner, then wire only the dependencies needed to expose it. Re-check the
   route map if implementation requires a lower layer to import a higher layer or one feature to import another.
 - Use repository resource, localization, permission, manifest, dependency injection, and testing mechanisms.
-- After adding or moving persistent files, run the repository's layout validator and its contract tests when
-  available. Fix the artifact ownership or the validator's generic analysis; do not add a product exception
-  merely to make the gate pass.
+- After adding or moving files, run an applicable layout validator when available. Run the validator's own
+  contract tests when its implementation or layout contract changes. Fix ownership rather than adding a
+  product-specific exception to satisfy a gate.
 - When the route is a new product workspace, invoke `$android-app-factory` and use its authoritative generator
   and acceptance flow instead of reproducing workspace creation here.
 - Keep Factory and Platform changes in their own repositories and branches. Generated apps consume the
   Factory-tested published Platform version; local composite paths are temporary validation inputs and are
   never persisted in generated workspaces.
-- Do not switch repositories, data sources, permissions, validation quality, or delivery form as a fallback
-  when the selected path fails. Report the root cause and ask before changing the intended path.
+- Choose implementation tools within the agreed goal, repository scope, data source, permissions/session,
+  quality and deliverable. If recovery from failure would change those boundaries, explain the cause and
+  impact and ask before changing them; continue independent authorized work.
 
 ## Validate By Risk
 
-Run the narrowest check that can fail for the changed semantic, then broaden until the accepted behavior and
-affected integration boundary are covered. Repository-mandated checks remain mandatory.
+Run the narrowest check that can fail for the changed behavior, then broaden until the affected integration
+boundary is covered. Applicable repository-mandated checks remain mandatory. Reuse evidence already valid
+for the current relevant code and environment; rerun after relevant changes, failures or unresolved risks.
+Use `$app-change-self-check` if evidence selection needs further guidance, as part of this validation pass.
+For documentation-only edits, validate the changed content and links; run app checks when executable
+instructions or behavior are affected. The table lists candidate evidence for the affected behavior; select
+what is sufficient for the change. Factory initialization retains its full acceptance requirements.
 
 | Change | Primary evidence | Broaden when |
 | --- | --- | --- |
@@ -160,12 +157,14 @@ Before delivery:
 
 1. Inspect the final diff and `git status --short --branch`; exclude build outputs, local paths, credentials,
    temporary evidence, and unrelated changes.
-2. Re-check each route-map row for ownership, minimum artifacts, dependency direction, and matching proof.
+2. Confirm the changed behavior has the right owner, dependencies and evidence using the final diff.
 3. Perform any repository-required artifact-boundary review. Keep persistent artifacts focused on the final
    behavior and durable constraints rather than rejected approaches or agent work history.
 4. Report changed behavior and its owning boundary, the reason for that route, commands and evidence that
    passed, packaging or device status when applicable, and any unverified risk.
 
+Continue through implementation, relevant validation, result inspection and repair of defects introduced
+by the task. Stop at the agreed deliverable or a genuine blocker requiring user input or external change.
 Do not claim CI, PR, merge, release, or production completion unless it actually happened.
 
 ## Delivery Escalation

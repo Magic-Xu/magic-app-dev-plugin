@@ -1,66 +1,29 @@
 ---
 name: android-app-architecture-guardrails
-description: Use when implementing, refactoring, or reviewing Android app code where maintainability matters; enforces role-based decomposition, MVI/contract hygiene, Compose UI purity, resource/i18n discipline, file-size limits, utility extraction, and validation gates. Business/domain agnostic and suitable for any Android app.
+description: Review Android changes that affect responsibility boundaries, MVI state, Compose side effects, resources, or platform gateways.
 ---
 
 # Android App Architecture Guardrails
 
-## Overview
+Use for Android changes whose architecture or state/effect ownership needs judgment. Apply the target repository's actual contracts; user instructions take precedence over this skill's guidance. Reuse established context and validation evidence from the active task.
 
-Use this skill before adding, refactoring, or reviewing Android app code that can affect architecture, UI structure, state flow, platform calls, resources, or long-term maintainability. Prefer the target repository's own rules when they are stricter.
+## Scope The Review
 
-## Workflow
+Inspect the changed behavior and nearby code first. Read engineering docs, decisions, module boundaries, or CI definitions when they govern that change or resolve an uncertainty. Widen the review when the affected dependencies require it.
 
-1. Inspect local context before editing:
-   - Read `AGENTS.md`, `docs/engineering/`, active feature docs, and nearby files.
-   - Find existing patterns for MVI, Compose routing, design tokens, resources, tests, and platform gateways.
-   - Check file sizes with `rg --files -g '*.kt' | xargs wc -l | sort -nr`.
+Fix the ownership problem needed for the requested behavior. Existing debt outside that scope can be reported without expanding the implementation.
 
-2. Define the responsibility boundary:
-   - `ui`: Compose rendering and event dispatch only.
-   - `presentation`: ViewModel, reducer, intent/effect handling, state mapping.
-   - `contract`: public page state, intents, effects, UI-facing enums.
-   - `domain`: pure business rules, models, algorithms, render engines.
-   - `data` or platform/core gateways: file IO, pickers, sharing, permissions, external navigation, SDK calls.
-   - `core/designsystem` and `core/ui`: tokens and reusable UI primitives.
-   - `core/common`: business-agnostic utilities.
+## Responsibility Boundaries
 
-3. Refactor by moving behavior to its owner:
-   - Move system calls out of Composables into gateways, handlers, or app-level effect coordinators.
-   - Move pure conversions and calculations into named mapper/util files.
-   - Move repeated UI controls into reusable components.
-   - Keep app shells focused on dependency wiring, route switching, and cross-page effects.
-   - Do not introduce new dependencies unless the task truly requires them.
+- Compose UI renders state and dispatches events. Platform calls, navigation, storage, SDK effects, and repository mutations belong in gateways or route/effect coordinators.
+- Presentation owns state transitions, reducers and UI-facing state mapping. Domain owns pure business rules and algorithms. App-level coordination owns cross-feature routing and lifecycle effects.
+- Use the repository's MVI contract pattern for independently stateful pages. Add only the state, intents, effects and state holder the behavior needs; extend existing ownership for subordinate UI.
+- Extract helpers or components when distinct responsibilities, reuse or testability justify them. File length is a review signal, not an automatic refactoring requirement. Preserve explicit repository limits enforced by its engineering contract.
+- User-visible text uses Android resources. Update supported translations when changing localized text; preserve design tokens for existing colors, spacing, shapes and typography.
+- Add dependencies only when needed for the task. Record a new durable boundary or architectural decision in the appropriate engineering documentation when maintainers need it.
 
-4. Keep MVI and Compose clean:
-   - New pages define `XxxContract`, `XxxState`, `XxxIntent`, `XxxEffect`, and `XxxViewModel` first.
-   - Composables receive state and callbacks; they do not decide navigation, call SDKs, read/write files, or mutate repositories directly.
-   - One-off commands such as navigation, picker open, save, share, or toast should be modeled as effects or handled by a route/effect coordinator.
+## Validation Evidence
 
-5. Control file and component size:
-   - Any Kotlin/Compose file over 800 lines must be split before completion.
-   - Treat files over 400 lines as review hotspots; split if the file mixes responsibilities.
-   - Split Compose screens by role: route/screen shell, top bar, content/preview, controls, dialogs/sheets, rows/chips.
-   - Prefer a small named file over private helper piles inside a large screen.
+Use the task's validation plan or `$app-change-self-check` when selecting evidence needs further guidance. Inspect changed contracts, resource use and side-effect ownership as part of the final diff. Run focused checks for unresolved risks; broaden to shared boundaries when affected.
 
-6. Enforce resources and design tokens:
-   - All user-visible strings go through Android string resources.
-   - When a repo supports multiple locales, update every supported `values-*` directory together.
-   - Do not hardcode colors, spacing, radius, or typography in formal page code when a token exists.
-   - If a repeated value has no token, add a narrow token or local component constant instead of scattering literals.
-
-7. Validate before finishing:
-   - Run the narrowest useful compile/test command.
-   - Re-run file-size checks.
-   - Search for hardcoded UI text, direct platform calls in UI, and duplicate helpers.
-   - Update `docs/engineering/` or `docs/decisions/` when adding a new rule, boundary, or architectural decision.
-
-## Review Checklist
-
-- Does every changed file have one primary responsibility?
-- Are UI, state, domain, and platform boundaries still separate?
-- Are new utilities business-agnostic and placed outside feature packages when reusable?
-- Are page contracts updated before UI behavior changes?
-- Are strings localized and visual values tokenized?
-- Are all changed files below 800 lines?
-- Did verification run, and are remaining risks explicit?
+Reuse checks already passed for the same relevant code and environment. New changes, failures, or remaining uncertainty justify reruns. Report the implemented behavior, material architectural decisions, and any unverified boundary.

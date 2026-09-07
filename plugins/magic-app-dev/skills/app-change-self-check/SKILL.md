@@ -1,100 +1,32 @@
 ---
 name: app-change-self-check
-description: "Use after Codex changes app code, resources, build files, tests, or docs and needs to self-check before handoff. Guides repository-agnostic validation: inspect local rules, run risk-based checks, rescan architecture and UI regressions, confirm git diff/status, and report concrete evidence plus skipped validation. Do not use for PR creation, merge, release, store upload, or production deployment."
+description: Validate an implemented app change before handoff when choosing checks or assessing missing evidence needs guidance.
 ---
 
 # App Change Self Check
 
-## Purpose
+Establish enough evidence that the requested behavior works and affected boundaries remain valid. Apply the repository's relevant engineering contracts; user instructions take precedence over this skill's guidance.
 
-Use this skill after an app change is implemented and before handing it back to the user. The goal is to prove the change is coherent, scoped, and ready for the user's next validation step without pretending that unrun device, browser, CI, or manual checks happened.
+## Use The Existing Task Context
 
-Prefer repository-specific rules when they are stricter.
+Use the accepted requirement, current diff, applicable rules and validation results already gathered. Inspect missing or changed context as needed, including nearby tests and the repository's exact build or CI commands. Separate this task's changes from unrelated work.
 
-## Workflow
+## Choose Evidence By Risk
 
-### 1. Reconstruct The Actual Change
+- Pure logic: focused behavior tests and compilation for the affected target.
+- UI or orchestration: state and interaction evidence for the changed flow; use a device, emulator or browser when visible behavior, navigation or lifecycle requires it.
+- Platform or IO: deterministic tests plus integration evidence for the real provider, persistence, permission or system boundary that changed.
+- Build, manifest or shared contracts: relevant lint, dependency checks and affected consumer compilation.
+- Documentation or metadata: validate links, syntax, consistency and the affected reader path; compile or run the app only if executable behavior or instructions require it.
 
-- Read the newest user request and any explicit exclusions.
-- Check `git status --short --branch`.
-- Inspect the diff with `git diff --stat` and targeted `git diff` for risky files.
-- Separate your changes from unrelated dirty work. Do not stage, revert, or summarize unrelated changes as yours.
-- Identify the changed user workflow or engineering boundary in observable terms.
+Complete applicable repository-mandated checks. A successful check for unchanged relevant inputs can be reused across delivery, architecture and self-check workflows. Rerun only after relevant changes, failures, or unresolved concerns. Add tests when they protect meaningful behavior, not merely to mirror an implementation.
 
-### 2. Re-read Local Validation Rules
+If credentials, a device, network access or authorization prevents a required check, continue independent checks and state the exact evidence gap. Do not substitute weaker evidence and call the original check passed.
 
-Look for local sources before choosing commands:
+## Review And Complete
 
-- `AGENTS.md` or equivalent agent instructions.
-- `README`, `docs/engineering`, architecture decisions, release checklists, or validation docs.
-- CI/workflow files.
-- Build files and package scripts.
-- Nearby tests for changed modules.
+Inspect the final diff and status for ownership, changed contracts, unintended dependencies, resource or permission changes, secrets and generated artifacts. Use targeted searches for a plausible risk rather than rescanning the entire repository by default. Integrate any required artifact-boundary review here.
 
-Use the repo's exact commands when available. If rules conflict, follow the stricter local rule.
+Fix defects introduced by the requested change and recheck the affected behavior before handing back. Report what changed, the material evidence and any remaining limitation; keep detailed logs out of the final answer unless needed for a decision. Do not claim device, CI or manual validation that did not run.
 
-### 3. Select Checks By Risk
-
-Run the narrowest checks that can catch the likely regressions, then broaden when the blast radius is larger.
-
-Always consider:
-
-- Syntax/format safety: `git diff --check`, formatter, typecheck, or lint.
-- Compile/build for the changed target.
-- Unit tests for changed pure logic, reducers, mappers, repositories, or gateway wrappers.
-- UI/integration tests when screen state, navigation, persistence, import/export, playback, network, or platform effects changed.
-- Device/emulator/browser validation when visible behavior or platform APIs changed and the user did not explicitly skip it.
-
-If a check needs network, a device, credentials, paid services, production resources, or approval, do not fake it. Run what is available and state the gap.
-
-### 4. Run Focused Static Rescans
-
-Choose rescans that match the app and change type. Examples:
-
-- File size hotspots: `rg --files -g '*.kt' | xargs wc -l | sort -nr | head`.
-- Hardcoded UI strings in code when resources/i18n are required.
-- Direct platform calls from UI layers when gateways/effect handlers are expected.
-- Secrets, API keys, raw prompts, paths, filenames, URIs, or provider responses in source/logging.
-- Unexpected dependency, permission, manifest, entitlement, or build config changes.
-- Duplicate helpers or mixed responsibilities introduced by the change.
-
-Treat scan results as evidence to interpret, not as a checklist to pass mechanically.
-
-### 5. Verify Behavior Boundaries
-
-Before handoff, answer these questions from the diff and checks:
-
-- Does the change solve the original problem rather than patching a symptom?
-- Is the responsibility in the right layer for this repo?
-- Did any public contract, navigation route, persistence schema, resource set, permission, or provider boundary change?
-- Are existing user flows preserved unless the user asked to change them?
-- Are new failure states explicit and user-safe?
-
-If the answer is uncertain, either inspect more, run another focused check, or report the residual risk clearly.
-
-### 6. Final Git And Evidence Check
-
-Before final response:
-
-- Re-run `git status --short --branch`.
-- Confirm generated artifacts, build outputs, screenshots, logs, or temporary files are not accidentally included.
-- Capture the exact commands that passed or failed.
-- Note skipped checks with the reason, especially device/browser/manual validation.
-
-Do not end with running sessions still active.
-
-## Handoff Format
-
-Keep the final answer concise and decision-relevant:
-
-- What changed, grouped by behavior or architecture boundary.
-- Why the structure is safer or more maintainable.
-- Validation commands and pass/fail result.
-- What was not validated and why.
-- Residual risk or the next user validation step.
-
-Do not list every file unless the user asks. Do not claim "fully verified" if only compile or unit tests ran.
-
-## Escalation Boundary
-
-This skill stops at self-check and handoff. If the user asks to push, create a PR, merge, release, upload, or clean branches, use a dedicated repository release or GitHub mainline skill when available.
+Push, PR, merge, release, upload and deployment require the user's corresponding authorization and the relevant delivery workflow.
