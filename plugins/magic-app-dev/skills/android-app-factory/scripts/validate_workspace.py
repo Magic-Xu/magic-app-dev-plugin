@@ -234,6 +234,7 @@ def main() -> int:
             f"app/src/main/java/{package_path}/feature/home/presentation/HomeViewModel.kt",
             f"app/src/main/java/{package_path}/feature/home/ui/HomeScreen.kt",
             f"app/src/test/java/{package_path}/feature/home/presentation/HomeMutationReducerTest.kt",
+            f"app/src/test/java/{package_path}/feature/home/presentation/HomeViewModelTest.kt",
             "docs/README.md",
             "docs/product/product-requirements.md",
             "docs/engineering/architecture.md",

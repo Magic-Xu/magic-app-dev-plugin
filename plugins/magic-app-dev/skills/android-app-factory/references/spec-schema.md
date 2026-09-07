@@ -16,7 +16,7 @@ Use these fields when translating a user's request into generator arguments.
 
 ## Optional
 
-- "--magic-platform-version": defaults to the Factory-tested stable version `1.0.0`. Override only
+- "--magic-platform-version": defaults to the Factory-tested stable version `1.1.0`. Override only
   with another already-published stable `x.y.z` version with major >= 1; 0.x, snapshots, and local
   paths are rejected.
 - "--app-repo-name": defaults to "<slug>-android".

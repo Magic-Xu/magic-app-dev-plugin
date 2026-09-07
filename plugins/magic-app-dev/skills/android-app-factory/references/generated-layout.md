@@ -71,6 +71,8 @@ before user-visible feature implementation. The generated ready screen remains a
 - One pinned released Magic Android Platform version supplying Application, Compose, Pulse, and mandatory Quality plugins.
 - "HomeContract", "HomeState", "HomeIntent", "HomeEffect", typed "HomeMutation", "HomeMutationReducer", and "HomeViewModel".
 - Composables render state and dispatch intents only.
+- The ViewModel returns `EnqueueResult`; the route handles unavailable admission with localized retry feedback.
+- `HomeViewModelTest` exercises the real Split ViewModel, including a full mailbox and closed lifecycle; `HomeMutationReducerTest` checks the isolated reducer.
 - Design values live in "core/designsystem".
 - Dependency direction is `app -> feature -> domain -> core`; features cannot import app or sibling features.
 - Each independent page named "XxxScreen" owns an "XxxContract" and "XxxViewModel"; subordinate loading, empty, error, and section visuals use "XxxContent" or "XxxComponent".
