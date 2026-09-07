@@ -1,30 +1,13 @@
-# Project Sources And Release State
+# Release Context And Resumption
 
-Read this when onboarding a project, resolving conflicting sources, or resuming an interrupted release.
-Follow the repository's layout. Link existing sources rather than copying them into a skill-specific file.
+Use the shared [project source map](../../app-end-to-end-delivery/references/project-context.md) for
+identity, current product facts, authority, design/capture sources and market coverage. Extend existing
+release operations records only for missing information needed by this workflow.
 
-## Find The Operational Inputs
-
-Search release/build scripts, Gradle variants, publishing metadata, marketing design sources, product and
-monetization docs, privacy/data declarations, release archives and existing operation instructions.
-If links are missing, add a concise source map in the existing Google Play operations document. It should
-resolve these decisions without hardcoding a particular developer's machine, phone serial or browser tab:
-
-| Concern | Project-owned source |
-| --- | --- |
-| Identity and target | Package/application ID, Console app link, normal track, owner submission boundary, established rollout policy. |
-| Product truth | Maintained behavior/monetization/data-flow sources, supported features and explicit marketing exclusions. |
-| Build and proof | Release variant, version policy, build/signature/device/CI gates, artifact archive commands. Reference secret configuration locations, never secret values. |
-| Market coverage | Console locale inventory, app UI languages, default and custom listings, text/image inheritance and existing translation sources. |
-| Brand and capture | Editable design/render sources, approved copy, source captures, fonts, export formats, device setup and project-approved demo/ad settings. |
-| Publication evidence | Last live binary, last live store revision, current prepared work and Console evidence. |
-
-Capture preferences such as temporarily hiding ads apply to that app's screenshot session. They do not
-change release monetization or imply that the product is ad-free. Feature exclusions and pricing language
-belong to the app. Do not embed one app's package, version, language list or screenshots in this plugin.
-
-If accepted assets live in an active feature worktree, resolve that worktree and approval before reuse.
-Do not silently substitute older mainline assets or merge the feature as a side effect of release work.
+Capture preferences such as temporarily hiding ads apply to that app's screenshot session; they do not
+change release monetization or imply the product is ad-free. Feature exclusions and pricing language
+belong to the app, not the plugin. If accepted assets live in an active feature worktree, resolve it and
+its approval before reuse. Do not substitute older mainline assets or merge as a release side effect.
 
 ## Keep Binary And Store Baselines Independent
 

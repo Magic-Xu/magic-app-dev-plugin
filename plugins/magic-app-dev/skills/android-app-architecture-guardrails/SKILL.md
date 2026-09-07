@@ -11,9 +11,17 @@ Use for Android changes whose architecture or state/effect ownership needs judgm
 
 Inspect the changed behavior and nearby code first. Read engineering docs, decisions, module boundaries, or CI definitions when they govern that change or resolve an uncertainty. Widen the review when the affected dependencies require it.
 
-Fix the ownership problem needed for the requested behavior. Existing debt outside that scope can be reported without expanding the implementation.
+For review-only requests, report findings with locations and evidence; do not edit. During an authorized
+implementation, fix the ownership problem required by that behavior. Report unrelated debt separately.
+For a whole-version audit, use the selected baseline and feature inventory from
+[版本与改动审查](../app-change-self-check/SKILL.md), not just the current dirty diff.
 
 ## Responsibility Boundaries
+
+The Factory default dependency direction is `app -> feature -> domain -> core`; upper layers may use
+lower layers, never the reverse, and features do not import siblings. Keep cross-feature coordination
+in `app`. Apply the target repository's established equivalent boundaries. For MVI/Pulse state and
+effect choices, read [mvi-pulse-compose.md](references/mvi-pulse-compose.md) only when needed.
 
 - Compose UI renders state and dispatches events. Platform calls, navigation, storage, SDK effects, and repository mutations belong in gateways or route/effect coordinators.
 - Presentation owns state transitions, reducers and UI-facing state mapping. Domain owns pure business rules and algorithms. App-level coordination owns cross-feature routing and lifecycle effects.

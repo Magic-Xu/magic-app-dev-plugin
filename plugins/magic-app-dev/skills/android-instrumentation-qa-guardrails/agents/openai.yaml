@@ -1,4 +1,4 @@
 interface:
-  display_name: "Android Instrumentation QA Guardrails"
-  short_description: "Reliable Android UI test startup and validation"
-  default_prompt: "Use $android-instrumentation-qa-guardrails to validate Android app UI flows without relying on manual app launches."
+  display_name: "Magic · 真机验证"
+  short_description: "用可复现的设备证据验证 Android 交互、系统能力及生命周期。"
+  default_prompt: "使用 $android-instrumentation-qa-guardrails，验证这个 Android 流程在设备上的行为，记录可复现证据和覆盖缺口。"

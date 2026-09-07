@@ -78,6 +78,15 @@ If a product sentence cannot be derived without inventing the app's purpose, sto
 - Do not delete partially created remote repositories automatically. Report the exact state and use the publisher's resumable behavior after the user resolves the failure.
 - GitHub Pages content is public even when a plan permits Pages from a private repository.
 
+## Product Lifecycle Handoff
+
+The generated documentation index is the project's source map and includes a product-design approval
+policy. Use accepted product decisions from [产品规划](../local-first-android-app-builder/SKILL.md);
+the generated ready screen does not constitute approval of the product UI. Before later user-visible
+features, follow the generated design gate. Console setup and live release baselines are established
+by [Google Play 发版](../google-play-release/SKILL.md) when that work is requested, not by scaffolding.
+Do not retrofit another existing app as a side effect of updating the generator.
+
 ## Generated Structure
 
 Read [references/generated-layout.md](references/generated-layout.md) when changing template contents or diagnosing a generated workspace.

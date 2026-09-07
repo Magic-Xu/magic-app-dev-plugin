@@ -1,3 +1,4 @@
 interface:
-  display_name: "App Product Analytics"
-  short_description: "Analyze live app growth, usage, retention, and revenue data"
+  default_prompt: "使用 $app-product-analytics，分析这个产品的经营表现或本次迭代效果，给出可核验的结论和后续决策。"
+  display_name: "Magic · 产品数据分析"
+  short_description: "分析获客、留存、漏斗与变现，按项目约定交付报告并验证迭代效果。"

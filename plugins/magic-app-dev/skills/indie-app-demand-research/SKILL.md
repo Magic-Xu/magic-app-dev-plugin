@@ -63,3 +63,10 @@ Use the form that answers the request. An opportunity shortlist should identify 
 supporting evidence, first complete product loop, monetization, reachable channel, key risk, and next validation.
 A source summary or focused idea review can be shorter. Lead with the supported recommendation or conclusion,
 separate facts from assumptions, and explain evidence gaps that could change it.
+
+## Handoff To Product Planning
+
+When the user chooses an opportunity, carry the evidence, target user/job, unresolved demand and
+distribution risks into [产品规划](../local-first-android-app-builder/SKILL.md). Retain the original
+validation criterion for [later outcome checks](../app-end-to-end-delivery/references/iteration-outcomes.md).
+A research request alone does not authorize creating a product, account or repository.

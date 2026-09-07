@@ -1,4 +1,4 @@
 interface:
-  display_name: "Android App Factory"
-  short_description: "Create paired Android and legal-site repositories"
-  default_prompt: "Use $android-app-factory to create a new Android app workspace with a private app repository and public legal-site repository."
+  display_name: "Magic · 创建项目"
+  short_description: "创建独立的 Android 与法律站点双仓，验证工程基线及设计门禁。"
+  default_prompt: "使用 $android-app-factory，帮我创建新的 Android 与法律站点双仓工作区，并验证生成结果。"
