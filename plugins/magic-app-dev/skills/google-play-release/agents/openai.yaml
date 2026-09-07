@@ -1,0 +1,4 @@
+interface:
+  display_name: "Google Play Release"
+  short_description: "Prepare AAB releases and refresh store content as needed"
+  default_prompt: "Use $google-play-release to prepare the next Google Play release, assess store changes, and stop before review submission or rollout."
