@@ -61,6 +61,24 @@ PACKAGE_SEGMENT_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 STABLE_VERSION_PATTERN = re.compile(r"^[1-9][0-9]*\.[0-9]+\.[0-9]+$")
 DEFAULT_MAGIC_PLATFORM_VERSION = "1.0.0"
 
+INPUT_NOT_ACCEPTED = {
+    "en": "Action not accepted. Please try again.",
+    "zh-CN": "操作未接收，请重试。",
+    "zh-Hant": "操作未接收，請重試。",
+    "es": "No se aceptó la acción. Inténtalo de nuevo.",
+    "pt-BR": "A ação não foi aceita. Tente novamente.",
+    "hi": "कार्रवाई स्वीकार नहीं हुई। कृपया फिर से कोशिश करें।",
+    "ur": "کارروائی قبول نہیں ہوئی۔ براہ کرم دوبارہ کوشش کریں۔",
+    "fr": "L’action n’a pas été acceptée. Veuillez réessayer.",
+    "ja": "操作を受け付けられませんでした。もう一度お試しください。",
+    "ko": "작업을 처리할 수 없습니다. 다시 시도해 주세요.",
+    "id": "Tindakan tidak diterima. Silakan coba lagi.",
+    "th": "ไม่สามารถรับคำสั่งได้ โปรดลองอีกครั้ง",
+    "vi": "Thao tác chưa được tiếp nhận. Vui lòng thử lại.",
+    "ms": "Tindakan tidak diterima. Sila cuba lagi.",
+    "fil": "Hindi tinanggap ang pagkilos. Pakisubukang muli.",
+}
+
 
 class FactoryError(RuntimeError):
     pass
@@ -218,6 +236,7 @@ def app_strings_xml(app_name: str, locale: str) -> str:
     <string name="home_ready">{xml_text(ready)}</string>
     <string name="home_primary_action">{xml_text(action)}</string>
     <string name="home_interaction_count">{xml_text(count)}</string>
+    <string name="input_not_accepted">{xml_text(INPUT_NOT_ACCEPTED[locale])}</string>
 </resources>
 """
 
@@ -426,15 +445,22 @@ object HomeMutationReducer : PulseMutationReducer<HomeState, HomeMutation, HomeE
 def home_view_model(application_id: str) -> str:
     return f"""package {application_id}.feature.home.presentation
 
+import com.magic.mvicore.android.PulseAndroidExecutionOwner
 import com.magic.mvicore.android.PulseIntentContext
 import com.magic.mvicore.android.PulseIntentExecutionDecision
 import com.magic.mvicore.android.PulseSplitStoreViewModel
 import com.magic.mvicore.android.PulseUiIntentExecutor
+import com.magic.mvicore.android.androidPulseRuntimeConfig
+import com.magic.mvicore.contract.EnqueueResult
+import com.magic.mvicore.runtime.PulseRuntimeConfig
 import {application_id}.feature.home.contract.HomeEffect
 import {application_id}.feature.home.contract.HomeIntent
 import {application_id}.feature.home.contract.HomeState
 
-class HomeViewModel : PulseSplitStoreViewModel<
+class HomeViewModel(
+    runtimeConfig: PulseRuntimeConfig = androidPulseRuntimeConfig(),
+    executionOwner: PulseAndroidExecutionOwner? = null,
+) : PulseSplitStoreViewModel<
     HomeState,
     HomeIntent,
     HomeMutation,
@@ -443,10 +469,10 @@ class HomeViewModel : PulseSplitStoreViewModel<
     initialState = HomeState(),
     mutationReducer = HomeMutationReducer,
     uiIntentExecutor = HomeIntentExecutor,
+    runtimeConfig = runtimeConfig,
+    executionOwner = executionOwner,
 ) {{
-    fun accept(intent: HomeIntent) {{
-        trySend(intent)
-    }}
+    fun accept(intent: HomeIntent): EnqueueResult = trySend(intent)
 }}
 
 private object HomeIntentExecutor : PulseUiIntentExecutor<
@@ -479,12 +505,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.magic.mvicore.android.compose.collectStateAsStateWithLifecycle
+import com.magic.mvicore.contract.EnqueueResult
 import {application_id}.R
 import {application_id}.core.designsystem.AppSpacing
 import {application_id}.feature.home.contract.HomeIntent
@@ -495,15 +525,23 @@ import {application_id}.feature.home.presentation.HomeViewModel
 fun HomeRoute(viewModel: HomeViewModel = viewModel()) {{
     val lifecycleOwner = LocalLifecycleOwner.current
     val state by viewModel.collectStateAsStateWithLifecycle(lifecycleOwner)
+    var admissionRejected by remember(viewModel) {{ mutableStateOf(false) }}
     HomeScreen(
         state = state,
-        onIntent = viewModel::accept,
+        admissionRejected = admissionRejected,
+        onIntent = {{ intent ->
+            admissionRejected = when (viewModel.accept(intent)) {{
+                is EnqueueResult.Enqueued -> false
+                EnqueueResult.Full, is EnqueueResult.Rejected -> true
+            }}
+        }},
     )
 }}
 
 @Composable
 fun HomeScreen(
     state: HomeState,
+    admissionRejected: Boolean,
     onIntent: (HomeIntent) -> Unit,
 ) {{
     Surface(modifier = Modifier.fillMaxSize()) {{
@@ -527,6 +565,9 @@ fun HomeScreen(
             )
             Button(onClick = {{ onIntent(HomeIntent.OnPrimaryClick) }}) {{
                 Text(text = stringResource(R.string.home_primary_action))
+            }}
+            if (admissionRejected) {{
+                Text(text = stringResource(R.string.input_not_accepted))
             }}
         }}
     }}
@@ -555,6 +596,58 @@ class HomeMutationReducerTest {{
 
         assertEquals(3, store.state.value.interactionCount)
         store.failureProbe.assertEmpty()
+    }}
+}}
+"""
+
+
+def home_view_model_test(application_id: str) -> str:
+    return f"""package {application_id}.feature.home.presentation
+
+import com.magic.mvicore.android.PulseIntentExecutionResult
+import com.magic.mvicore.android.testing.PulseSplitTestConfig
+import com.magic.mvicore.android.testing.runPulseSplitTest
+import com.magic.mvicore.contract.EnqueueResult
+import {application_id}.feature.home.contract.HomeEffect
+import {application_id}.feature.home.contract.HomeIntent
+import {application_id}.feature.home.contract.HomeState
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class HomeViewModelTest {{
+    @Test
+    fun publicIntentRunsTheRealExecutorAndReducer() = runPulseSplitTest {{
+        val host = splitHost<HomeState, HomeIntent, HomeMutation, HomeEffect, HomeViewModel> {{
+                config, owner -> HomeViewModel(config, owner)
+        }}
+
+        assertEquals(
+            PulseIntentExecutionResult.Completed,
+            host.sendAndDrain(HomeIntent.OnPrimaryClick),
+        )
+        assertEquals(1, host.viewModel.state.value.interactionCount)
+        assertEquals(2, host.transitionProbe.snapshot().size)
+        host.failureProbe.assertEmpty()
+    }}
+
+    @Test
+    fun callbackReportsFullAndClosed() = runPulseSplitTest {{
+        val host = splitHost<HomeState, HomeIntent, HomeMutation, HomeEffect, HomeViewModel>(
+            config = PulseSplitTestConfig(mailboxCapacity = 1),
+        ) {{ config, owner -> HomeViewModel(config, owner) }}
+
+        assertTrue(host.viewModel.accept(HomeIntent.OnPrimaryClick) is EnqueueResult.Enqueued)
+        assertEquals(EnqueueResult.Full, host.viewModel.accept(HomeIntent.OnPrimaryClick))
+        runCurrent()
+        assertEquals(1, host.viewModel.state.value.interactionCount)
+        assertTrue(host.viewModel.accept(HomeIntent.OnPrimaryClick) is EnqueueResult.Enqueued)
+        runCurrent()
+        assertEquals(2, host.viewModel.state.value.interactionCount)
+
+        host.closeAndDrain()
+        assertTrue(host.viewModel.accept(HomeIntent.OnPrimaryClick) is EnqueueResult.Rejected)
+        assertEquals(2, host.viewModel.state.value.interactionCount)
     }}
 }}
 """
@@ -838,6 +931,11 @@ def testing_doc() -> str:
     return """# Testing
 
 Minimum validation for the generated shell:
+
+`HomeViewModelTest` runs the real Android Split ViewModel through its executor and reducer. It also
+checks Full admission, recovery after draining, and rejection after closure. `HomeMutationReducerTest`
+checks the isolated state transition. The route handles `EnqueueResult` and shows retry feedback when
+the Store cannot accept an input; feature callbacks must retain this admission handling.
 
 ~~~bash
 ./gradlew check :app:assembleDebug :app:assembleRelease :app:bundleRelease
@@ -1224,6 +1322,9 @@ kotlin.code.style=official
             application_id
         ),
         f"app/src/test/java/{package_path}/feature/home/presentation/HomeMutationReducerTest.kt": home_mutation_reducer_test(
+            application_id
+        ),
+        f"app/src/test/java/{package_path}/feature/home/presentation/HomeViewModelTest.kt": home_view_model_test(
             application_id
         ),
         "tools/publishing/legal/sync_to_legal_repo.py": sync_legal_script(
