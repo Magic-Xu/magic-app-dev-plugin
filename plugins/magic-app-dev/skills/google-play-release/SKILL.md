@@ -1,13 +1,13 @@
 ---
 name: google-play-release
-description: Prepare Google Play version updates with signed AAB verification, localized release notes, three-level store assessment, optional screenshot and description refresh, and verified Console drafts for owner submission. Also handles store-only updates and resuming release preparation.
+description: Google Play 首次上架、AAB 版本更新、商店截图与描述更新及草稿续办；核验包体与多语言内容，评估无需/局部/全面刷新，默认停在用户送审和发布之前。
 ---
 
 # Google Play Release
 
 ## Outcome And Authority
 
-One entry point prepares a version update and determines how much store content needs to change.
+One entry point prepares a first launch, version update, or store-only change and determines the needed store work.
 Deliver a verified release draft, any approved store changes, and the exact remaining owner action.
 For a store-only request, run the assessment and refresh path without building or uploading a new binary.
 For a supplied AAB, establish its identity and evidence before deciding whether another build is needed.
@@ -25,16 +25,27 @@ distribution countries, account permissions, managed publishing, or unrelated pe
 project's existing release policy and session decisions; clarify only a missing decision that changes
 the release target, user-visible meaning, data handling, authority or deliverable.
 
+## Select The Release Mode
+
+- **First launch:** The app has no published product/store baseline. Read
+  [first-launch.md](references/first-launch.md) for initial Console setup, declarations and store design.
+  An existing unpublished Console app or test release should be resumed, not created again.
+- **Version update:** Establish the two independent baselines below and run the cumulative store assessment.
+- **Store-only:** Assess and update the requested listing content without building/uploading a new binary.
+- **Resume:** Inspect saved state and artifact identity, then continue the matching mode from its actual state.
+
 ## Establish The Two Baselines
 
 Read the target repository's instructions and release/store sources. Reuse established worktrees,
 scripts, build configuration, approved assets and valid test results. Apply its branch/worktree rules
-before persistent edits; do not create an app or a new Codex task to run this workflow.
+before persistent edits. Android project creation belongs to Factory; initial Console app creation follows
+the first-launch scope. Do not create a new Codex task merely to run this workflow.
 
 Establish:
 
 - The requested app/package, accepted code or supplied artifact, version, target track and release policy.
 - The last actually released binary and the **last actually published store content**, independently.
+  For first launch, record absent baselines as not yet established; do not confuse this with unknown history.
 - Current Console state: uploaded bundles, drafts, pending/reviewed changes, locale coverage and overrides.
 - Current product facts and exclusions: features, UI, free/paid boundaries, ads, privacy/data flows,
   supported devices, app languages, store locales, brands, editable assets and capture setup.
@@ -72,9 +83,10 @@ observed conversion problem calls for it; distinguish verified recommendations f
 
 ## Execute The Selected Path
 
-1. Use [release-preparation.md](references/release-preparation.md) for build, package verification,
-   localized update notes, upload and Console readback. Complete mandatory project release/device checks.
-2. For Partial or Full, use [store-refresh.md](references/store-refresh.md). Produce a concrete review
+1. For a binary release, use [release-preparation.md](references/release-preparation.md) for build,
+   package verification, localized notes, upload and Console readback. Complete mandatory project
+   release/device checks. Store-only work skips binary preparation and upload.
+2. For initial store content, Partial or Full, use [store-refresh.md](references/store-refresh.md). Produce a concrete review
    with changed copy and images before asking the owner to approve them. Continue independent build and
    validation while design review is pending; do not upload unapproved store content.
 3. Consolidate review into one useful package. Routine version notes are included in the final release
@@ -100,5 +112,7 @@ Do not label a draft with unresolved required checks as ready for submission.
 Keep binary and store status independent: prepared, saved, submitted, approved and live are distinct facts.
 Record evidence and observation time; distinguish owner-reported submission from a Console observation.
 Update a live baseline only after live status is established, not when a file is generated or uploaded.
-Store-only updates must remain runnable between binary releases. No periodic monitor is created unless
-the user requests one.
+Store-only updates must remain runnable between binary releases. When an iteration has a metric or
+recovery target, connect the published version/store revision to its existing
+[outcome record](../app-end-to-end-delivery/references/iteration-outcomes.md). No periodic monitor is
+created unless the user requests one.

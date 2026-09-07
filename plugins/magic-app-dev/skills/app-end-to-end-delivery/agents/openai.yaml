@@ -1,4 +1,4 @@
 interface:
-  display_name: "App Requirement Delivery"
-  short_description: "Route and deliver Android app requirements"
-  default_prompt: "Use $app-end-to-end-delivery to route this Android app requirement to the right boundary, implement it, validate it by risk, and prepare the handoff."
+  display_name: "Magic · 开发与迭代"
+  short_description: "识别当前产品阶段，衔接需求、设计、开发、发布与后续效果验证。"
+  default_prompt: "使用 $app-end-to-end-delivery，判断这个产品当前需要的阶段，衔接相关流程并完成本次开发或迭代。"

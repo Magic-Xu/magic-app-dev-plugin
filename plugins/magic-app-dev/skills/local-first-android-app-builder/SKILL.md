@@ -1,50 +1,48 @@
 ---
 name: local-first-android-app-builder
-description: Define or review a local-first Android product's core user loop, V1 scope, data boundaries, and project-specific engineering choices before implementation or workspace creation.
+description: 产品规划：定义 Android 产品的用户闭环、版本范围、数据与收费边界、设计验收和效果指标。Plan a local-first product before design or project creation; this skill does not generate a workspace.
 ---
 
-# Local-first Android App Builder
+# Android Product Planning
 
-Turn an app idea into a small, complete user loop with explicit data and operating-cost boundaries. Use this
-skill for product planning and project kickoff; reuse accepted decisions when work continues in an existing app.
+Turn an idea or next-version objective into a small, complete user loop and buildable acceptance scope.
+The stable skill ID is retained for existing callers; project generation belongs to Android App Factory.
+Reuse accepted decisions when continuing an existing product.
 
-## Establish The Product Boundary
+## Define The Product Decision
 
-Resolve only what the current decision needs:
+Resolve the user and job, shortest path to useful value, current-version inclusions/exclusions, important
+failure/recovery behavior, and system capabilities. Distinguish evidence of demand from product hypotheses.
+For uncertain demand, use [需求调研](../indie-app-demand-research/SKILL.md) for the relevant question.
 
-- Who the app serves, the job it completes, and the path from user intent to a useful result.
-- What belongs in the requested version and which plausible expansions are outside it.
-- Required system capabilities such as picking, capture, storage, sharing, billing, or analytics.
-- Which data stays on-device, what may be exported or transmitted, and what must never be logged.
-- Offline behavior and acceptable ongoing server or vendor costs.
+Specify local storage, exports/transmissions, logging/telemetry, deletion, offline behavior and operating
+cost boundaries. Keep sensitive content out of logs. The core loop should not depend on ancillary ads,
+analytics or monitoring. Network-dependent features follow the accepted offline contract.
 
-Use the user's requirements and relevant product or engineering context already available. Ask when missing
-information changes product meaning, permissions, data handling, or the deliverable; continue independent work.
-Routine implementation details can be resolved from the repository's patterns without reopening accepted scope.
+Clarify free/paid entitlement, ads, trial/restore behavior and account requirements only when applicable;
+do not infer them from a competitor or add them to every V1. Changes to actual data collection require
+aligned implementation, privacy/legal sources and store declarations before publication.
 
-## Make Project-Specific Choices
+Define acceptance in user outcomes and consequential failure paths. For a product hypothesis, select an
+existing metric/baseline, success criterion and observation window using
+[iteration outcomes](../app-end-to-end-delivery/references/iteration-outcomes.md). Missing measurement is
+not permission to introduce tracking. A maintenance fix can use functional acceptance alone.
 
-- Keep the core loop usable independently of analytics, advertising, and monitoring. Treat network-dependent
-  features according to the agreed offline behavior rather than assuming every feature must work offline.
-- Keep sensitive content out of logs and telemetry. When adding a collecting SDK, align the actual data flow,
-  privacy documentation, and required store declarations before publication.
-- Extend established state and platform ownership. Use the repository's MVI and Pulse conventions where required;
-  only independently stateful pages need their own page contract and state holder.
-- Add packages, modules, gateways, or shared components when behavior, ownership, reuse, or testability needs them.
-  Preserve repository-enforced quality rules, resource localization, and design tokens.
+Ask when missing information changes product meaning, permissions, data handling or the deliverable.
+Routine implementation choices follow the repository. Record only durable accepted facts in their
+existing sources, with open decisions clearly separated; do not duplicate a product framework per task.
 
-Record decisions in existing product or engineering documents when maintainers need them. Create a new document
-only for a distinct reader and purpose.
+## Continue To The Requested Stage
 
-## Continue Into The Requested Work
+- Use [kickoff context](references/bootstrap-checklist.md) for scope and source placement.
+- Use [design and acceptance](../app-end-to-end-delivery/references/design-and-acceptance.md) for visible
+  changes; obtain required design approval before feature implementation.
+- Use [repository rules](references/repo-rules-template.md) when authoring project-specific instructions.
+- Use [创建项目](../android-app-factory/SKILL.md) for a new paired Android/legal workspace.
+- Use [implementation delivery](../app-end-to-end-delivery/references/implementation-delivery.md) for an
+  accepted implementation request. Architecture and MVI guidance belong to
+  [架构审查](../android-app-architecture-guardrails/SKILL.md), not a second copy in the product plan.
 
-- For kickoff scope and artifact placement, consult [references/bootstrap-checklist.md](references/bootstrap-checklist.md).
-- For page state and effect ownership, consult [references/mvi-pulse-compose.md](references/mvi-pulse-compose.md).
-- When creating or reviewing repository rules, consult [references/repo-rules-template.md](references/repo-rules-template.md).
-- For a new Magic Android workspace, use `$android-app-factory` and its authoritative generator and acceptance flow.
-- For implementation in a Magic Android Factory workspace, use `$app-end-to-end-delivery`. In other repositories,
-  follow their delivery conventions; use `$android-app-architecture-guardrails` or `$app-change-self-check` when a
-  boundary or validation choice needs further guidance.
-
-Load only the guidance needed for that next step. If implementation is already requested, continue into it after
-resolving the product boundary; a completed plan is the deliverable only when the user requested planning.
+A planning-only task ends with a concrete plan and decisions. An implementation request continues after
+product decisions and required design approval; do not reopen established scope or generate a new app
+for an existing project.

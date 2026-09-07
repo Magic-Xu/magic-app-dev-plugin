@@ -1,6 +1,6 @@
 ---
 name: app-product-analytics
-description: Analyze app growth, usage, retention, funnels, and monetization from console or supplied data, for a full operating review or a focused metric question. Deliver completed analyses as verified Lark reports.
+description: 产品数据分析：获客、活跃、留存、漏斗与变现，支持经营总览、专项问题和上线后的效果验证；按项目约定交付可核验报告。
 ---
 
 # App Product Analytics
@@ -63,8 +63,13 @@ with a metric and window for verification. Full reviews retain all Baseline rows
 needed to answer their question. Use only as much structure and as many actions as the decision needs.
 
 For each completed analysis using live or user-supplied app data, follow
-[references/lark-report-delivery.md](references/lark-report-delivery.md). Use `<App> 数据分析｜<analysis end date>`
-or the reader's language. A narrow analysis still follows the Lark delivery contract.
+[references/report-delivery.md](references/report-delivery.md). Use `<App> 数据分析｜<analysis end date>`
+or the reader's language; the report destination follows the request/project preference.
+
+For a proposed iteration or a request to verify a shipped change, use
+[iteration outcomes](../app-end-to-end-delivery/references/iteration-outcomes.md). Connect the finding,
+accepted action, original metric/baseline, actual published exposure and observation window. Analysis
+alone does not authorize implementing recommendations or scheduling monitoring.
 
 ## Measurement Boundaries
 

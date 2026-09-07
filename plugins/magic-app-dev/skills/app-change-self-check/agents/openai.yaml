@@ -1,7 +1,7 @@
 interface:
-  display_name: "App Change Self Check"
-  short_description: "Verify app changes before handoff"
-  default_prompt: "Use $app-change-self-check to self-check this app change before handoff."
+  display_name: "Magic · 版本与改动审查"
+  short_description: "自检当前改动，或汇总整版本全部功能，审查架构、文档和回归证据。"
+  default_prompt: "使用 $app-change-self-check，对本版本所有 feature 做一次只读总审，先确认发布基线，再检查架构偏移、文档一致性和回归证据。"
 
 policy:
   allow_implicit_invocation: true

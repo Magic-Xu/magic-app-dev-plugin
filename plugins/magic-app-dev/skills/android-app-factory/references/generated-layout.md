@@ -56,6 +56,14 @@ The generator produces:
 - One current source represents each stateful topic. Git history replaces `final`, dated, copied, archived, or version-suffixed document variants.
 - The generated repository tests its layout validator and runs it in the `Repository Layout` workflow. Apps may add product-specific required paths or compatibility exceptions without weakening the shared lifecycle boundaries.
 
+## Design And Lifecycle Sources
+
+`docs/README.md` is the initial source map. It links the generation spec, current build configuration,
+product requirements, legal sources and engineering rules. Future design, console, release and
+measurement sources extend this index; generation does not establish live store or binary state.
+`docs/engineering/design-review.md` and `AGENTS.md` require owner approval of current product design
+before user-visible feature implementation. The generated ready screen remains an engineering sample.
+
 ## Android Baseline
 
 - One ":app" Gradle module.

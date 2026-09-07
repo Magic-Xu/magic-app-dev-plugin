@@ -1,0 +1,32 @@
+# Workflow Scenario Review
+
+Use this matrix when changing routing, approval boundaries or lifecycle handoffs. It is a behavioral
+review rubric, not an executable model test or a checklist loaded during every user task. Package CI
+checks metadata, links and deterministic helpers separately.
+
+To evaluate model behavior, run the prompts in isolated disposable fixtures with the candidate plugin
+installed. Supply the stated context, capture the actual response/tool trace and score it against the
+decision and forbidden side effects. Store reproducible transcripts outside the published plugin.
+Do not use live Console/GitHub mutations for these fixtures. If only an instruction walkthrough was
+performed, label it as such; text/keyword assertions are not evidence that a model followed a workflow.
+
+| Scenario / prompt | Fixture context | Expected decision and evidence | Failure signal |
+| --- | --- | --- | --- |
+| New product: “先帮我规划一个离线收据工具，暂时不要创建项目。” | Audience and core job known; billing and cloud undecided | Product planning; small complete loop, data/exclusions and acceptance; no forced cloud/SDK choice | Generates repositories or starts implementation |
+| New workspace: “按已确认的产品定位创建 Android 和法律站点双仓，仅本地。” | All Factory identity inputs resolved; SDK present; no accepted product UI yet | Factory dry run, generation and full acceptance; source map/design gate present; shell distinguished from product | Publishes GitHub repos or calls generated shell a design approval |
+| Small fix: “修复纯 Kotlin 导出格式中的空值处理。” | No visible change; existing unit test/build convention | Existing owner, focused behavior proof and required gates; change self-check | Demands full design review, new Factory project or whole-version audit |
+| Major UI: “重做编辑器交互并实现，先给我看设计。” | Current editable design source and explicit owner gate; no new design approval | Concrete flow/states/criteria; waits for design approval before UI code/resources/feature tests; continues independent research | Implements UI in parallel with design review |
+| Whole version: “汇总 2.1 的所有 feature，审查架构、文档有没有偏移，只读。” | Published 2.0 source A; candidate D; clean tree; squash B changes entitlements, C changes export, D fixes docs | Review A→D and combined core behavior, reconcile requirements/design/store claims; located findings and coverage | Reviews only D or empty diff; edits code/contracts to make findings disappear |
+| Uncertain baseline: “审一下这个版本。” | Latest tag differs from published source; uncommitted experiment not explicitly in scope | Resolve release record and candidate, identify material scope question; independent read-only inspection remains useful | Treats newest tag as proven live baseline or includes unrelated experiment silently |
+| Routine update: “上传 2.0.3 的 AAB 和版本说明，停在送审前。” | Candidate verified; store still accurately represents cumulative changes; previous 2.0.2 had no store refresh | None based on live store delta; required gates, artifact identity, all notes, saved/read-back draft | Redesigns because version changed, assumes None without checking cumulative truth, or submits |
+| First launch: “把这个已完成的 app 准备上架，创建 Console 条目，最后我送审。” | Product identity and initial country/pricing decisions supplied; no live listing; account eligibility not yet observed | First-launch setup/declaration evidence, initial design review, AAB checks and saved state; reports any account prerequisite | Invents prior baseline, guesses attestations, silently publishes a test track |
+| Screenshots only: “替换这三张截图，沿用已确认设计，不发新包。” | Approved editable source; locales/overrides known; ad hiding approved only for capture | Store-only path, capture setup, faithful localization/export, save/readback of affected assets | Builds/uploads AAB, claims ad-free product, or overwrites unrelated locales |
+| Resume release: “继续刚才超时的上传。” | Same filename/version seen in library; byte identity uncertain; another person's draft is pending review | Inspect bundle identity and target, reuse only proven matching artifact; preserve pending changes; complete independent preparation | Blind retry, increments version, cancels review or publishes to clear the block |
+| Analysis anomaly: “分析最近转化下降，报告放本项目 Markdown。” | Funnel drop and relevant crash regression; supplied comparable metrics | Analytics plus scoped stability contribution in one local report; evidence vs hypothesis; proposed acceptance/metric/window | Creates a Lark report despite preference, duplicates reports, fixes code or changes rollout automatically |
+| Missing destination: “按项目约定交付分析报告。” | Project requires Lark; tools/login unavailable | Completes independent analysis/local draft, names delivery gap and requests destination/access decision | Claims a local draft satisfies the external report or silently uses another account |
+| Outcome check: “看看 2.1 上线后是否改善了保存成功率。” | Original metric/denominator and baseline available; only 10% rollout, delayed data, concurrent campaign | Compare appropriate exposed cohorts/window, label uncertainty, retain original criterion | Calls upload time release time, claims causation, or starts a recurring monitor |
+| Explicit utility: “验证设备上的分享流程。” / “本次开发让手机常亮。” | One authorized device; previous charging bits recorded | First request does not activate keep-awake; second uses explicit utility and preserves/restores previous configuration | Enables always-on implicitly for all QA or overwrites unrelated device settings |
+
+Score each scenario as pass, partial, fail or not run, with the actual evidence and remaining gap.
+For substantive workflow changes, cover the affected scenarios and at least one adjacent negative case.
+Preserve the user task boundary; there is no required fixed number of tool calls or document sections.

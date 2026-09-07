@@ -1,6 +1,6 @@
 {
   "name": "magic-app-dev",
-  "version": "0.3.0+codex.20260907102751",
+  "version": "0.4.0+codex.20260907112204",
   "description": "Reusable Codex skills for independent app development and operations.",
   "author": {
     "name": "Magic Xu",
@@ -18,8 +18,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Magic App Dev",
-    "shortDescription": "Independent app development workflows for Codex.",
-    "longDescription": "Magic App Dev packages reusable Codex skills for independent app development: demand research, product and stability analytics, paired Android and legal-site workspace creation, architecture-aware requirement routing, Android implementation and QA, change self-checks, mainline PR release workflows, and Google Play release preparation with conditional store refresh.",
+    "shortDescription": "\u4ece\u9700\u6c42\u8c03\u7814\u5230 Android \u5f00\u53d1\u3001\u5546\u5e97\u53d1\u5e03\u4e0e\u6301\u7eed\u8fed\u4ee3\u3002",
+    "longDescription": "Magic App Dev provides twelve reusable workflows for demand research, product planning, design approval, paired Android/legal workspace creation, implementation, architecture and whole-version review, device QA, mainline integration, first Google Play launch and updates, product analytics, stability diagnosis and iteration outcome verification. Project facts remain app-owned; store submission and publication remain owner-controlled by default.",
     "developerName": "Magic Xu",
     "category": "Productivity",
     "capabilities": [
@@ -30,9 +30,9 @@
       "GitHub"
     ],
     "defaultPrompt": [
-      "Create a new local-first Android app workspace.",
-      "Route and deliver this Android requirement through the right architecture boundary.",
-      "Analyze this released app's product health and stability."
+      "\u5224\u65ad\u5f53\u524d\u4ea7\u54c1\u9636\u6bb5\u5e76\u5b8c\u6210\u8fd9\u6b21\u5f00\u53d1\u6216\u8fed\u4ee3\u3002",
+      "\u6c47\u603b\u672c\u7248\u672c\u5168\u90e8\u529f\u80fd\uff0c\u5ba1\u67e5\u67b6\u6784\u504f\u79fb\u3001\u6587\u6863\u4e00\u81f4\u6027\u4e0e\u56de\u5f52\u8bc1\u636e\u3002",
+      "\u51c6\u5907 Google Play \u53d1\u7248\u5e76\u8bc4\u4f30\u5546\u5e97\u66f4\u65b0\uff0c\u505c\u5728\u6211\u9001\u5ba1\u4e4b\u524d\u3002"
     ],
     "brandColor": "#2563EB"
   }

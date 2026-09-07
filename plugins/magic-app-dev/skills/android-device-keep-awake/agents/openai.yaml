@@ -1,6 +1,6 @@
 interface:
-  display_name: "Android Device Keep Awake"
-  short_description: "Keep an ADB device awake during long development"
-  default_prompt: "Use $android-device-keep-awake to keep my connected Android device awake throughout this development task."
+  display_name: "Magic · 设备常亮"
+  short_description: "在明确指定的长程开发任务中保持一台 Android 设备常亮，并可恢复。"
+  default_prompt: "使用 $android-device-keep-awake，在这次开发任务中保持我指定的 Android 设备常亮，并记录恢复方式。"
 policy:
   allow_implicit_invocation: false

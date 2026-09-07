@@ -1,4 +1,4 @@
 interface:
-  display_name: "Local-first Android Builder"
-  short_description: "Define local-first Android scope and data boundaries"
-  default_prompt: "Use $local-first-android-app-builder to define this Android app's core user loop, V1 scope, and data boundaries, then continue into the requested work."
+  display_name: "Magic · 产品规划"
+  short_description: "明确用户闭环、版本范围、数据和收费边界，形成设计与验收输入。"
+  default_prompt: "使用 $local-first-android-app-builder，帮我规划这个产品或下一版本的用户闭环、范围、设计与验收标准。"

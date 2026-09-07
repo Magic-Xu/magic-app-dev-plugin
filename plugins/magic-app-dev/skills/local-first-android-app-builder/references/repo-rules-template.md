@@ -8,6 +8,7 @@ Useful project facts include:
 - Product purpose, accepted scope, and data or privacy boundaries.
 - Required technology and dependency direction, including the existing page/state pattern.
 - Supported locales, design-token source, and platform-effect ownership.
+- Current editable product-design source and the applicable owner approval gate before visible implementation.
 - Repository layout and authoritative documents, with links rather than copied policy text.
 - Actual branch/worktree policy and local validation commands, including enforced CI gates.
 - Store, legal, or release obligations relevant to the implemented capabilities.

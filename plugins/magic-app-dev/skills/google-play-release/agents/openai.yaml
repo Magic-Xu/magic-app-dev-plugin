@@ -1,4 +1,4 @@
 interface:
-  display_name: "Google Play Release"
-  short_description: "Prepare AAB releases and refresh store content as needed"
-  default_prompt: "Use $google-play-release to prepare the next Google Play release, assess store changes, and stop before review submission or rollout."
+  display_name: "Magic · Google Play 发版"
+  short_description: "准备首次上架或 AAB 更新，按需刷新商店内容，停在用户送审与发布前。"
+  default_prompt: "使用 $google-play-release，准备这次 Google Play 发布，核验 AAB、版本说明和商店更新范围，保存草稿并停在我送审之前。"

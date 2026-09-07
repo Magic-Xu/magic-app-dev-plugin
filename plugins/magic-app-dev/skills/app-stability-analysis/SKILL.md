@@ -1,6 +1,6 @@
 ---
 name: app-stability-analysis
-description: Diagnose app crashes, ANRs, and release regressions from Crashlytics and store quality data, for a full stability review or a specific issue. Deliver standalone analyses as verified Lark reports.
+description: 稳定性分析：诊断 Crash、ANR、版本回归及修复后的恢复效果；基于 Crashlytics 与商店质量数据，按项目约定交付报告。
 ---
 
 # App Stability Analysis
@@ -61,8 +61,12 @@ supports the requested diagnosis. Say "no issue observed in the inspected popula
 
 When contributing to `$app-product-analytics`, return findings and evidence to that analysis for its combined report.
 For a standalone completed analysis based on live or user-supplied app data, follow the shared
-[Lark report delivery](../app-product-analytics/references/lark-report-delivery.md) with title
+[report delivery](../app-product-analytics/references/report-delivery.md) with title
 `<App> 稳定性分析｜<analysis end date>` or the reader's language.
+
+For release recovery checks, use the original issue signature, affected versions/population and recovery
+criteria from the [iteration record](../app-end-to-end-delivery/references/iteration-outcomes.md). Verify
+actual exposure and source latency before judging the fix; do not equate upload with recovery.
 
 ## Evidence Boundaries
 

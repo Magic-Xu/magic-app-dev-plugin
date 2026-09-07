@@ -569,6 +569,12 @@ def app_agents(android_locales: Iterable[str]) -> str:
 - Define the smallest complete V1 loop before implementing product features.
 - Do not add accounts, servers, cloud sync, ads, billing, analytics, or sensitive permissions without explicit product scope and a legal-policy update.
 
+## Product design review
+
+- Before user-visible feature changes, update the current editable design source and obtain owner approval before implementing feature code, Android resources, or feature tests.
+- Follow docs/engineering/design-review.md. Reuse approval of the unchanged design; material visible changes return to review before implementation.
+- Pure logic or infrastructure changes without visible behavior changes do not need a design artifact.
+
 ## Architecture
 
 - UI uses Jetpack Compose.
@@ -589,7 +595,7 @@ def app_agents(android_locales: Iterable[str]) -> str:
 
 ## Repository organization
 
-- Read docs/README.md before creating or moving persistent files.
+- Read docs/README.md for the project source map before creating or moving persistent files.
 - Keep current product facts in docs/product, engineering rules in docs/engineering, operator procedures in docs/operations, and durable decision history in docs/decisions.
 - Keep editable visual sources in design, executable helpers in tools, external publishing inputs in publishing, immutable release evidence in releases, and reproducible local outputs in the ignored build directory.
 - Keep one current source per topic. Update it instead of adding final, copy, dated, or version-suffixed state documents; Git preserves superseded states.
@@ -722,6 +728,9 @@ Define:
 - Explicit V1 inclusions and exclusions.
 - Local, exported, logged, and network data.
 - Required Android system capabilities.
+- Applicable free/paid, ads, account and restore boundaries.
+- User-visible flow and important states for design review before implementation.
+- Functional acceptance; for product experiments, baseline, success metric and observation window.
 
 The generated ready screen validates architecture and compilation only; it is not the product's V1 loop.
 """
@@ -739,10 +748,25 @@ publishing inputs, release binaries, or generated output.
 | Question | Source |
 | --- | --- |
 | What should the product do now? | [product/product-requirements.md](product/product-requirements.md) |
+| Which design needs approval before implementation? | [engineering/design-review.md](engineering/design-review.md) |
 | Which architecture boundaries apply? | [engineering/architecture.md](engineering/architecture.md) |
 | How is the change verified? | [engineering/testing.md](engineering/testing.md) |
 | How does an operator perform a release or external configuration step? | [operations/](operations/) |
 | Why was a durable tradeoff chosen? | [decisions/](decisions/) |
+
+## Project source map
+
+The initial identity and locale inputs are recorded in [the generation spec](../.app-factory/spec.json).
+For current package/build facts use [app/build.gradle.kts](../app/build.gradle.kts) and actual resources;
+the initial spec is not proof of later SDKs, data flows or distribution. Legal sources live in
+[publishing/legal](../publishing/legal/); [legal hosting](operations/legal-hosting.md) describes projection
+to the public repository.
+
+As the product develops, extend this index with links to its actual design, release operations, Console
+projects and measurement/report sources. Store locale coverage and distribution countries are separate
+from Android UI languages. Console configuration and live binary/store baselines are not established by
+generation. Keep their observed states and owner submission boundary in the release operations source
+when first configured. Reference credentials through existing providers; never copy secret values here.
 
 ## Place a new artifact
 
@@ -788,6 +812,25 @@ app-level Store is never a container for feature state. Platform quality checks 
 locale parity, package paths, and the 400-line production Kotlin limit without consumer exemptions.
 
 Split Gradle modules only when build speed, ownership, reuse, or enforceable dependency boundaries justify the added cost.
+"""
+
+
+def design_review_doc() -> str:
+    return """# Product Design Review
+
+Before a user-visible feature change, maintain one current editable design source under `design/`
+and present the affected flow, visible states, copy and acceptance criteria to the owner. Use the
+established source and tools once chosen; do not migrate or replace it with static captures silently.
+A small copy change can use a compact rendered before/after; a new flow needs enough interaction and
+failure-state detail for a meaningful decision.
+
+Wait for explicit approval of the current design before feature code, Android resources or feature
+tests. Independent research and read-only feasibility checks can continue. Implement the accepted
+source and verify both appearance and behavior. If visible behavior must change, update the design
+and obtain approval of that change first; reuse approval of unchanged portions.
+
+Pure logic or infrastructure changes without a visible change do not need a design artifact. The
+generated ready screen is an engineering baseline, not the product's accepted UI design.
 """
 
 
@@ -1194,6 +1237,7 @@ kotlin.code.style=official
         ),
         "docs/engineering/architecture.md": architecture_doc(),
         "docs/engineering/testing.md": testing_doc(),
+        "docs/engineering/design-review.md": design_review_doc(),
         "docs/operations/README.md": operations_readme(),
         "docs/decisions/README.md": """# Architecture Decisions
 

@@ -1,4 +1,4 @@
 interface:
-  display_name: "Indie App Demand Research"
-  short_description: "Find paid demand before building indie apps"
-  default_prompt: "Use $indie-app-demand-research to research and rank local-first indie app directions from real demand signals."
+  display_name: "Magic · 需求调研"
+  short_description: "用真实需求和分发证据验证产品机会，明确下一步验证与取舍。"
+  default_prompt: "使用 $indie-app-demand-research，帮我调研这个产品机会，给出证据、关键风险和下一步验证。"
