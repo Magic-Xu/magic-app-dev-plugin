@@ -59,7 +59,7 @@ SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 REPO_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
 PACKAGE_SEGMENT_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 STABLE_VERSION_PATTERN = re.compile(r"^[1-9][0-9]*\.[0-9]+\.[0-9]+$")
-DEFAULT_MAGIC_PLATFORM_VERSION = "1.0.0"
+DEFAULT_MAGIC_PLATFORM_VERSION = "1.1.0"
 
 INPUT_NOT_ACCEPTED = {
     "en": "Action not accepted. Please try again.",
