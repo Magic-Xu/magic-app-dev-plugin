@@ -1,7 +1,0 @@
-interface:
-  display_name: "Magic · 架构审查"
-  short_description: "审查 Android 模块、MVI 状态、Compose 副作用与职责边界。"
-  default_prompt: "使用 $android-app-architecture-guardrails，审查这次 Android 改动的架构、状态与副作用归属，给出有证据的问题。"
-
-policy:
-  allow_implicit_invocation: true

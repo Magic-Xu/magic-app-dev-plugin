@@ -45,9 +45,10 @@ what every newly generated workspace must contain; do not use it to update an ex
 
 ## Choose The Minimum Artifacts
 
-Use [architecture ownership](../../android-app-architecture-guardrails/SKILL.md) when state,
-side effects, or module boundaries need judgment. It owns the layer and MVI guidance; reuse relevant
-guidance already loaded. Ordinary edits within an established boundary need no separate architecture pass.
+Use the release-review [architecture reference](../../app-release-review/references/architecture-and-implementation.md)
+when state, side effects or module boundaries need judgment; follow its Android state reference when relevant.
+Preserve project-required checks before implementation and reuse guidance already loaded. This focused
+boundary check does not start a whole-version audit.
 For an ambiguous route, read the matching [routing scenario](routing-scenarios.md).
 
 ## Place Persistent Artifacts By Meaning
@@ -93,7 +94,7 @@ under the feature by association. Do not create a persistent file when its reade
 
 ## Validate And Hand Off
 
-Use [change self-check](../../app-change-self-check/SKILL.md) for risk-based evidence and the final
-review. Complete repository-mandated gates, reuse valid results, and repair task-caused defects within
-the accepted scope. Report behavior, ownership decisions, evidence and remaining gaps. Continue any
+Use [版本发布审查与修复](../../app-release-review/SKILL.md) with the current change explicitly scoped for
+risk-based evidence and the final review; do not claim whole-release coverage from a feature check.
+Complete repository-mandated gates, reuse valid results, and repair task-caused defects within the accepted scope. Report behavior, ownership decisions, evidence and remaining gaps. Continue any
 already authorized integration or release through its dedicated skill and current external state.
