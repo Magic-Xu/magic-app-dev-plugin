@@ -14,8 +14,9 @@ For a supplied AAB, establish its identity and evidence before deciding whether 
 
 The default endpoint is **before review submission and before rollout/publication on every track**.
 The owner reviews changed store design/copy and performs final submission/publication. A request to
-prepare and upload a release covers the necessary build, validation, upload and draft saves; reuse that
-authorization without repeated confirmation. Automatic skill selection alone does not authorize writes.
+prepare and upload a release covers establishing and pushing its release branch to the configured project
+remote, plus the necessary build, validation, upload and draft saves; reuse that authorization without
+repeated confirmation. Automatic skill selection alone does not authorize writes.
 Honor a user's explicit change to this boundary, but never interpret “prepare a release” as permission
 to submit, publish, expand a staged rollout, or distribute to testers. Check the effect of an action:
 Console can offer Save or Publish depending on state; a button's position is not a permission boundary.
@@ -58,6 +59,20 @@ and distribution countries are separate sets. Preserve their verified scope.
 If the project lacks a usable source map or release record, follow
 [project-context.md](references/project-context.md). Keep project facts in the app repository, not this
 shared plugin. Do not introduce a parallel configuration when the existing sources answer the questions.
+
+## Establish The Release Branch Before Preparation
+
+For first launch, version updates and resumed binary releases, complete the
+[release branch gate](references/release-branch.md) after resolving the version and accepted source,
+**before persistent release edits, builds, artifact generation or Console writes**. Inspect local and remote
+refs; create or reuse the formal release branch and verify its upstream and pushed SHA. Use the project's
+release naming, defaulting to `release/<versionName>`. A temporary `codex/*` work branch does not satisfy
+this gate. Do not defer it until upload, handoff or a later mainline merge.
+
+Default a new release to the freshly fetched, accepted remote mainline. Existing releases and supplied
+AABs retain their verified source baseline; never relabel a newer mainline as an older artifact's source.
+Read-only checks and store-only work do not require creating a binary release branch. Follow the project's
+worktree rules for subsequent edits; keep the formal release branch distinct from a required task branch.
 
 ## Assess Store Changes On Every Version Update
 
@@ -106,7 +121,9 @@ Never weaken a required check or silently switch account, target, session or rel
 ## Handoff And Continued Use
 
 Report the version/code, track, artifact identity, assessment tier and reason, what was saved and verified,
-remaining checks, and the precise owner action/link. Present updated copy/design when review is needed.
+remaining checks, and the precise owner action/link. For binary releases, include the formal release branch,
+verified remote SHA, packaged source SHA and final working branch/worktree; name any unresolved branch gate.
+Present updated copy/design when review is needed.
 Do not label a draft with unresolved required checks as ready for submission.
 
 Keep binary and store status independent: prepared, saved, submitted, approved and live are distinct facts.

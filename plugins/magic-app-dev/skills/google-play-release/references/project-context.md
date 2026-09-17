@@ -18,6 +18,8 @@ the project's ignored output area.
 
 Minimum useful facts, expressed in the project's current format:
 
+- Branch: formal release branch, configured remote, verified remote SHA and accepted source baseline;
+  keep any separate task branch/worktree identifiable for resumption and cleanup.
 - Binary: source commit plus any included diff identity, version name/code, package/variant, AAB path and
   SHA-256, matching mapping/symbol files, validation evidence, Console track/release reference and status.
 - Store: approved source revision or content hashes, affected locales/listings, text and asset order,
@@ -32,6 +34,9 @@ record that provenance. Do not invent the code version at which an old screensho
 actual current content with the candidate product and maintain a usable baseline from this point onward.
 
 ## Resume From Evidence
+
+Recheck the [release branch gate](release-branch.md) for the current binary version. Reuse its local or
+remote branch and verified source; do not start over from a newer mainline just because the task resumed.
 
 Before retrying a timed-out upload/save, read the target state. Match package/version, track, relevant
 content and recorded artifact identity. Reuse a proven identical uploaded bundle; equal version code or

@@ -2,6 +2,9 @@
 
 ## Release Inputs And Verification
 
+Complete the [release branch gate](release-branch.md) before these preparation steps. Reusing an AAB or
+resuming a saved draft still requires a verified formal branch tied to its source.
+
 1. Confirm the accepted source or supplied AAB, target app and track. Read repository-specific versioning
    and release commands. Compare the intended version code against uploaded bundles across tracks, not
    only the live production version. Reuse a verified existing bundle when appropriate; a genuinely new
