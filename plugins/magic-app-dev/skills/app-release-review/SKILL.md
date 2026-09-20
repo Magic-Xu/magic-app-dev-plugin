@@ -1,13 +1,14 @@
 ---
 name: app-release-review
-description: 版本发布审查与修复：Google Play 上架前全盘核验累计需求、跨功能冲突、架构与实现、过时内容及发布证据；也支持明确限定的改动审查。只审查时保持只读，要求修复时完成范围内修复与验证。
+description: 版本发布审查与修复：Google Play 上架前从累计变化推导影响范围，核验新需求与既有能力是否退化、跨功能冲突、架构实现及发布证据；也支持限定范围审查。只审查时保持只读，要求修复时完成范围内修复与验证。
 ---
 
 # App Release Review And Repair
 
-Determine whether the candidate delivers the accepted product and is ready for release. Reconcile
-requirements, implementation and proof, then repair confirmed defects when authorized. Apply the
-project's contracts and reuse relevant context and evidence already gathered in the task.
+Determine whether the candidate delivers the accepted changes while preserving the product's existing
+promises, and whether the evidence supports release. Derive review scenarios from the actual changes and
+their affected responsibilities; a list of prior bugs or passing checks is not the review scope. Reconcile
+requirements, implementation and proof, then repair confirmed defects when authorized.
 
 ## Establish Scope And Authority
 
@@ -27,9 +28,13 @@ authorization without asking for each reversible fix. Product changes and unrela
 
 ## Review The Candidate
 
-- Trace accepted outcomes to reachable implementation and meaningful proof, and trace significant added
-  behavior back to its requirement or necessary engineering constraint. Inspect omissions, contradictions,
-  unnecessary implementation and stale guidance using the coverage reference.
+- Build the coverage map in [coverage-and-reconciliation.md](references/coverage-and-reconciliation.md):
+  cumulative changes, affected existing promises, reachable paths/shared owners, discriminating scenarios
+  and evidence or gaps. Screen the cross-cutting responsibilities there even when the user does not name
+  them. Trace new and bypassed paths; do not assume a replacement inherits the old path's safeguards.
+- Derive expected outcomes from accepted behavior and applicable constraints before trusting current code
+  or tests. Select scenarios that could disprove preservation of those outcomes, including affected failure
+  and interaction paths. Investigate discovered coupling until the relevant responsibilities are accounted for.
 - Read [architecture-and-implementation.md](references/architecture-and-implementation.md) for ownership,
   quality trade-offs and suspicious implementation. For Android state, concurrency, effects or recovery,
   also read [mvi-pulse-compose.md](references/mvi-pulse-compose.md).
@@ -39,6 +44,11 @@ authorization without asking for each reversible fix. Product changes and unrela
 Distinguish confirmed defects, hypotheses, missing evidence and optional improvements. A finding needs
 an affected outcome, concrete location, expected versus observed behavior and supporting evidence.
 Architecture preference, file length or absence of a direct caller alone is not a defect.
+
+Keep coverage open until each material change and affected responsibility has an explicit finding,
+supporting inspection/validation evidence, or a named gap. Existing tests and prior review conclusions
+are inputs to this map, not substitutes for it. Do not narrow a whole-version review merely because a
+packaging or infrastructure blocker already prevents release; continue independent inspection.
 
 ## Repair And Clean Up
 
@@ -64,7 +74,9 @@ are verified and unresolved blockers/decisions are explicit; optional debt does 
 Lead with ready, blocked, or not yet verified for the stated candidate and scope. Report material fixes
 and removals, severity-ranked remaining findings, coverage/evidence limits and unresolved decisions.
 Use one report at the user/project destination when required; otherwise the conversation is sufficient.
-Keep feature coverage compact and link detailed proof. Never claim full coverage or executed tests without evidence.
+Keep coverage compact and link detailed proof. Distinguish review completion from release readiness:
+uninspected applicable areas remain review gaps, even if the inspected paths have no findings. Qualify
+negative findings by their actual coverage; never claim full coverage or executed tests without evidence.
 
 Integration uses [合并主干](../github-pr-mainline-release/SKILL.md); Play preparation/upload uses
 [Google Play 发版](../google-play-release/SKILL.md) with the corresponding authorization. A review verdict
