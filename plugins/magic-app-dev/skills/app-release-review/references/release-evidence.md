@@ -4,6 +4,11 @@ Use the project's validation commands and reuse evidence tied to the same releva
 build variant, device/environment and artifact. Inspect what each check proves. New changes, failures
 or unresolved risks justify reruns; separate per-feature tests may not cover the combined release.
 
+Attach evidence to the expected outcome and scenario in the coverage map. Inspect assertions, inputs,
+dispatch path and observed boundary before reusing it. Test counts, green CI, prior fixes and SDK/event
+presence do not establish coverage of a new workflow or preservation of its inherited responsibilities.
+Distinguish static confirmation, executed behavior, packaged runtime and external-service receipt.
+
 ## Choose The Necessary Proof
 
 | Affected behavior | Relevant evidence |
@@ -14,6 +19,7 @@ or unresolved risks justify reruns; separate per-feature tests may not cover the
 | Platform/IO | Contract tests plus actual provider, persistence, permissions and external outcome where needed |
 | Release packaging/configuration | Candidate Release build, manifest/resources/dependencies, variant flags and packaged runtime proof |
 | Shared Platform/Factory contracts | Affected consumers and maintained smoke/contract tests; Factory changes use its full generation/build acceptance |
+| Measurement/diagnostics semantics | Real event/error producers and consumers; focused checks of attribution, units, timing, terminal outcomes and safe context; packaged/service receipt where changed wiring or the release contract requires it |
 | Documentation/tools/metadata | Syntax, links, reader path and source consistency; execute changed commands/helpers |
 
 Complete mandatory repository gates. Prefer behavior-oriented tests derived from accepted outcomes;
@@ -47,6 +53,12 @@ does not authorize changing Console or making factual attestations without evide
 
 ## State The Decision Precisely
 
+Before closing the review, reconcile the coverage map with the cumulative change inventory. Each material
+change and affected responsibility must have located findings, relevant inspection/validation evidence or
+an explicit gap. Summarize applicable areas left uninspected and why; do not silently convert them to
+"no issues found." Keep this in the same review record, not a second ceremonial checklist. Required gaps
+prevent a ready verdict; their presence does not prevent continued independent code/contract inspection.
+
 - **Ready within stated coverage:** No unresolved release blockers and required evidence is satisfied for
   the identified candidate. Optional debt can remain with its impact explained.
 - **Blocked:** A confirmed defect or unmet requirement prevents release; give its consequence and next action.
@@ -55,8 +67,9 @@ does not authorize changing Console or making factual attestations without evide
 
 Report the most consequential findings first, with trigger, expected/actual outcome, location, evidence,
 repair status and remaining action. Include the baseline/candidate, feature/critical-path coverage and
-material checks that did not run. Reuse the requested report or existing release record rather than a
-second checklist. Bundle uncertain cleanup/product decisions with enough context for the owner to decide.
+material checks that did not run. A no-findings statement describes only the inspected paths and their
+evidence limits; it must not imply that unsampled responsibilities were verified. Reuse the requested report
+or existing release record rather than a second checklist. Bundle uncertain cleanup/product decisions with enough context for the owner to decide.
 
 Unavailable devices, credentials or infrastructure do not invalidate independent completed work. State
 the exact missing proof and continue what can be verified. Static review alone cannot certify runtime
