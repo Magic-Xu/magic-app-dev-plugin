@@ -24,7 +24,8 @@ REQUIRED_PATHS = (
     "tools/README.md",
     "tools/repository/validate_layout.py",
     "publishing/README.md",
-    "publishing/legal/README.md",
+    "docs/operations/legal-hosting.md",
+    "tools/release/validate_legal_site.py",
 )
 
 DISALLOWED_DOC_DIRECTORY_NAMES = {

@@ -33,12 +33,16 @@ jobs:
           java-version: "21"
       - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6
       - uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
+        with:
+          packages: platform-tools
       - name: Install Android SDK
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
       - name: Configure generated repository commits
         run: |
           git config --global user.name "android-app-factory-ci"
           git config --global user.email "android-app-factory-ci@users.noreply.github.com"
+      - name: Test legal source boundaries and validation
+        run: python3 -B -m unittest discover -s plugins/magic-app-dev/skills/android-app-factory/tests -p 'test_*.py'
       - name: Generate a new workspace with the selected Platform version
         shell: bash
         run: |

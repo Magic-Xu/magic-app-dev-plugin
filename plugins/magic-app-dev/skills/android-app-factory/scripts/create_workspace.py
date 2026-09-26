@@ -696,8 +696,9 @@ def app_agents(android_locales: Iterable[str]) -> str:
 
 ## Legal source
 
-- Canonical public-site and legal files live in publishing/legal.
-- Run tools/publishing/legal/sync_to_legal_repo.py after approved legal changes.
+- Edit website and legal pages directly in the independent public repository identified by docs/operations/legal-hosting.md; it is their only source of truth.
+- The App keeps URLs and read-only checks. Run tools/release/validate_legal_site.py before release.
+- Site changes are reviewed and published from that repository; App commits do not publish the site.
 - Update the Privacy Policy before releasing capabilities that change data collection, sharing, storage, permissions, ads, billing, analytics, or accounts.
 
 ## Git
@@ -707,54 +708,12 @@ def app_agents(android_locales: Iterable[str]) -> str:
 """
 
 
-def sync_legal_script(legal_repo_name: str) -> str:
-    return f'''#!/usr/bin/env python3
-"""Copy canonical legal-site files into the sibling public repository."""
-
-from __future__ import annotations
-
-import argparse
-import json
-import shutil
-from pathlib import Path
+def legal_asset(name: str) -> str:
+    return (Path(__file__).resolve().parents[1] / "assets" / "legal-site" / name).read_text(encoding="utf-8")
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("target", nargs="?")
-    args = parser.parse_args()
-
-    app_root = Path(__file__).resolve().parents[3]
-    source = app_root / "publishing" / "legal"
-    target = (
-        Path(args.target).expanduser().resolve()
-        if args.target
-        else (app_root.parent / {legal_repo_name!r}).resolve()
-    )
-
-    marker_path = target / ".app-factory-legal.json"
-    if not target.is_dir() or not marker_path.is_file():
-        raise SystemExit(f"Refusing to sync: target marker missing in {{target}}")
-
-    marker = json.loads(marker_path.read_text(encoding="utf-8"))
-    if marker.get("repository") != {legal_repo_name!r}:
-        raise SystemExit("Refusing to sync: target repository marker does not match")
-
-    for source_path in sorted(source.rglob("*")):
-        if not source_path.is_file():
-            continue
-        relative = source_path.relative_to(source)
-        destination = target / relative
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source_path, destination)
-        print(f"synced {{relative}}")
-
-    print(f"Legal site synced to {{target}}. Review and commit it separately.")
-
-
-if __name__ == "__main__":
-    main()
-'''
+def legal_check_script(legal_repo_name: str) -> str:
+    return legal_asset("validate_legal_site.py").replace("__LEGAL_REPOSITORY__", legal_repo_name)
 
 
 def app_readme(app_name: str, product_sentence: str, legal_repo_name: str) -> str:
@@ -791,12 +750,11 @@ python3 tools/repository/validate_layout.py
 
 ## Legal site
 
-Canonical website and legal files are stored in `publishing/legal/`.
-
-Sync them into the sibling public repository:
+Edit website and legal files directly in the sibling `{legal_repo_name}` repository.
+See [legal maintenance](docs/operations/legal-hosting.md). Validate its pages and App URLs before release:
 
 ~~~bash
-python3 tools/publishing/legal/sync_to_legal_repo.py ../{legal_repo_name}
+python3 tools/release/validate_legal_site.py
 ~~~
 """
 
@@ -851,9 +809,9 @@ publishing inputs, release binaries, or generated output.
 
 The initial identity and locale inputs are recorded in [the generation spec](../.app-factory/spec.json).
 For current package/build facts use [app/build.gradle.kts](../app/build.gradle.kts) and actual resources;
-the initial spec is not proof of later SDKs, data flows or distribution. Legal sources live in
-[publishing/legal](../publishing/legal/); [legal hosting](operations/legal-hosting.md) describes projection
-to the public repository.
+the initial spec is not proof of later SDKs, data flows or distribution. The independent public
+repository owns website and legal sources; [legal maintenance](operations/legal-hosting.md) describes
+direct editing, read-only App checks and publication.
 
 As the product develops, extend this index with links to its actual design, release operations, Console
 projects and measurement/report sources. Store locale coverage and distribution countries are separate
@@ -971,26 +929,42 @@ python3 tools/repository/validate_layout.py
 def publishing_readme() -> str:
     return """# Publishing
 
-Store content intended to be copied to app stores, websites, or other external systems here. Publishing
-inputs are not product requirements or engineering rules. Verify both the source and the external system
+Store App-owned content intended for app stores or other external systems here. Website and legal
+sources belong to their independent public repository. Publishing inputs are not product requirements
+or engineering rules. Verify both the source and the external system
 before reporting publication complete.
 """
 
 
 def legal_hosting_doc(github_owner: str, legal_repo_name: str) -> str:
-    return f"""# Legal Site Publishing
+    return f"""# Legal Site Maintenance
 
-Public repository: `{github_owner}/{legal_repo_name}`
+Website and legal pages are maintained directly in the independent public repository
+[{github_owner}/{legal_repo_name}](https://github.com/{github_owner}/{legal_repo_name}).
+It is the only source for HTML, styles and website assets. The App owns its URL resources and
+read-only release checks.
 
-Expected Pages URLs:
+Edit the website checkout on its own feature branch. Review the actual App accounts, SDKs,
+permissions, collection, transmission, storage and deletion before updating legal text. Keep
+language versions consistent, preserve public routes, and update the effective date when applicable.
+
+In the website checkout, run `python3 tools/validate_site.py`. In the App checkout, run:
+
+~~~bash
+python3 tools/release/validate_legal_site.py
+python3 tools/release/validate_legal_site.py --legal-root /path/to/site-feature-worktree
+~~~
+
+The default site location is `{legal_repo_name}` beside the App's primary checkout, including when
+invoked from an App linked worktree. A missing site, broken route or App URL fragment fails validation.
+These checks read files only; they do not certify legal accuracy.
+
+After review and publication authorization, merge website changes into its own `main` and verify
+GitHub Pages deployment and the live App links. App commits do not publish the website.
 
 - https://{github_owner.lower()}.github.io/{legal_repo_name}/
 - https://{github_owner.lower()}.github.io/{legal_repo_name}/privacy-policy.html
 - https://{github_owner.lower()}.github.io/{legal_repo_name}/user-agreement.html
-
-The public repository is generated from `publishing/legal/`. Run
-`python3 tools/publishing/legal/sync_to_legal_repo.py ../{legal_repo_name}` after approved legal changes,
-then review and commit the public repository separately.
 """
 
 
@@ -1207,7 +1181,15 @@ Public GitHub Pages content for {app['name']}.
 - User Agreement: "user-agreement.html"
 - Localized routes: "en/" and "zh-CN/"
 
-GitHub Pages source: "main" branch, repository root.
+This repository is the only source for the website and legal pages. Edit HTML and CSS here on a
+feature branch; preserve published URLs. `site.json` lists the published base URL and required routes.
+Keep all languages aligned with the actual App behavior and update effective dates as needed.
+
+Before publication run `python3 tools/validate_site.py`; the App also invokes this read-only checker
+with its legal URL resources. For preview use `python3 -m http.server 8000 --bind 127.0.0.1`.
+
+After review and publication authorization, merge this repository's changes to main and verify the
+Pages deployment and live links. GitHub Pages source: "main" branch, repository root.
 """,
     }
 
@@ -1243,6 +1225,14 @@ GitHub Pages source: "main" branch, repository root.
         files["zh-CN/user-agreement.html"] = agreement_page(
             app["name"], "zh-CN", effective_date, nested=True
         )
+    files["site.json"] = json.dumps({
+        "baseUrl": f"https://{spec['github']['owner'].lower()}.github.io/{repos['legal']}/",
+        "requiredPages": sorted(path for path in files if path.endswith(".html") and path != "404.html"),
+    }, ensure_ascii=False, indent=2)
+    files["tools/validate_site.py"] = legal_asset("validate_site.py")
+    files[".github/workflows/validate.yml"] = legal_asset("validate.yml")
+    files[".gitignore"] = "__pycache__/\n*.py[cod]\n.DS_Store\n"
+
     return files
 
 
@@ -1327,7 +1317,7 @@ kotlin.code.style=official
         f"app/src/test/java/{package_path}/feature/home/presentation/HomeViewModelTest.kt": home_view_model_test(
             application_id
         ),
-        "tools/publishing/legal/sync_to_legal_repo.py": sync_legal_script(
+        "tools/release/validate_legal_site.py": legal_check_script(
             repos["legal"]
         ),
         "docs/README.md": docs_readme(),
@@ -1521,14 +1511,13 @@ def generate(args: argparse.Namespace) -> dict:
                 relative,
                 content,
                 executable=relative
-                == "tools/publishing/legal/sync_to_legal_repo.py",
+                == "tools/release/validate_legal_site.py",
             )
         copy_gradle_wrapper(app_root)
         copy_repository_layout_assets(app_root)
 
         for relative, content in generated_legal_files.items():
             write_text(legal_root, relative, content)
-            write_text(app_root / "publishing" / "legal", relative, content)
 
         write_text(
             staging,

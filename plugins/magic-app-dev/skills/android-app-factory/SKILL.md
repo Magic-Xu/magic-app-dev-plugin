@@ -13,7 +13,7 @@ Generate one parent workspace containing:
 
 - An Android repository with a minimal compiling Jetpack Compose shell, pulse MVI contract, design tokens, tests, localized resources, and a repository information architecture with an automated layout gate.
 - A public-site repository with a product homepage, Privacy Policy, User Agreement, English and Simplified Chinese routes, and GitHub Pages files.
-- A private copy of the legal-site source plus a safe sync script, so the Android repository remains the source of truth and the public repository is a publishing target.
+- One website/legal source in the independent public repository. The Android repository keeps URL resources and a read-only release check, including linked-worktree support.
 
 Do not copy an existing business app as the template. The starter must not include ads, analytics, accounts, billing, server upload, Firebase, ML Kit, or product-specific permissions.
 
@@ -101,7 +101,8 @@ Read [references/generated-layout.md](references/generated-layout.md) when chang
 - Platform quality checks are mandatory: consumers cannot disable dependency, feature-UI platform boundary, MVI, locale, package-path, or 400-line file-size rules.
 - User-visible Android strings exist in every generated Android locale.
 - The Android repository separates current documentation, editable design sources, executable tools, publishing inputs, release evidence, and generated output by lifecycle; its layout tests and validator pass locally and are wired into CI.
-- Canonical public-site and legal sources live under `publishing/legal`, outside product and engineering documentation.
+- Website and legal sources live only in the independent public repository; the App has no page copies or synchronization scripts.
+- The website route/link checker and the App URL check pass without changing either repository.
 - The public repository contains no private app source or secrets.
 - Root English legal URLs and localized English and Simplified Chinese URLs exist.
 - When remote publishing is requested, repository visibility is verified and GitHub Pages is configured from "main" at "/".

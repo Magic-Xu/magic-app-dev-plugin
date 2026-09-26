@@ -20,11 +20,10 @@ The generator produces:
       product/
     publishing/
       README.md
-      legal/
     gradle/
     tools/
       README.md
-      publishing/legal/sync_to_legal_repo.py
+      release/validate_legal_site.py
       repository/
         validate_layout.py
         tests/test_validate_layout.py
@@ -33,6 +32,9 @@ The generator produces:
     .git/
     .nojekyll
     README.md
+    site.json
+    tools/validate_site.py
+    .github/workflows/validate.yml
     assets/site.css
     en/
     zh-CN/
@@ -43,9 +45,9 @@ The generator produces:
 
 ## Ownership
 
-- The Android repository owns the product specification, repository layout policy, and canonical legal source.
-- The legal repository owns no private data. It is a publishable projection of `publishing/legal/`.
-- `tools/publishing/legal/sync_to_legal_repo.py` copies only the canonical legal tree and verifies the target marker before writing.
+- The Android repository owns product facts, URL resources, repository policy and read-only release checks.
+- The independent legal repository owns the only website/legal source, its styles, assets, required routes and validator; it contains no private app data.
+- Edit and publish from the legal repository directly. `tools/release/validate_legal_site.py` reads that checkout and checks the App URL resources, including from linked worktrees or an explicit `--legal-root`.
 - The parent workspace is not a third Git repository.
 
 ## Repository Information Architecture

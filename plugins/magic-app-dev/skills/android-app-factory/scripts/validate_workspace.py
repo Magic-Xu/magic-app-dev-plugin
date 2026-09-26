@@ -147,15 +147,9 @@ def validate_public_boundary(app_root: Path, legal_root: Path) -> None:
         if path.name in private_names or path.suffix in private_suffixes:
             raise ValidationError(f"private app artifact found in public repository: {path}")
 
-    source_root = app_root / "publishing" / "legal"
-    for source_path in source_root.rglob("*"):
-        if not source_path.is_file():
-            continue
-        relative = source_path.relative_to(source_root)
-        public_path = legal_root / relative
-        require_file(public_path)
-        if source_path.read_bytes() != public_path.read_bytes():
-            raise ValidationError(f"public legal file drifted from canonical source: {relative}")
+    for relative in ("publishing/legal", "docs/github-pages", "tools/publishing/legal/sync_to_legal_repo.py"):
+        if (app_root / relative).exists():
+            raise ValidationError(f"App contains a duplicate legal source or sync entry: {relative}")
 
 
 def gradle_block(source: str, name: str) -> str:
@@ -244,10 +238,8 @@ def main() -> int:
             "tools/README.md",
             "tools/repository/validate_layout.py",
             "tools/repository/tests/test_validate_layout.py",
-            "tools/publishing/legal/sync_to_legal_repo.py",
+            "tools/release/validate_legal_site.py",
             "publishing/README.md",
-            "publishing/legal/privacy-policy.html",
-            "publishing/legal/user-agreement.html",
             ".github/workflows/repository-layout.yml",
         )
         for relative in required_app_files:
@@ -256,6 +248,9 @@ def main() -> int:
         required_legal_files = (
             ".app-factory-legal.json",
             ".nojekyll",
+            "site.json",
+            "tools/validate_site.py",
+            ".github/workflows/validate.yml",
             "index.html",
             "privacy-policy.html",
             "user-agreement.html",
@@ -271,6 +266,7 @@ def main() -> int:
             require_file(legal_root / relative)
 
         validate_public_boundary(app_root, legal_root)
+        run(["python3", "-B", "tools/release/validate_legal_site.py", "--legal-root", str(legal_root)], cwd=app_root)
         run(
             [
                 "python3",
