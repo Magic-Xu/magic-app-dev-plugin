@@ -39,6 +39,8 @@ jobs:
         run: |
           git config --global user.name "android-app-factory-ci"
           git config --global user.email "android-app-factory-ci@users.noreply.github.com"
+      - name: Test legal source boundaries and validation
+        run: python3 -B -m unittest discover -s plugins/magic-app-dev/skills/android-app-factory/tests -p 'test_*.py'
       - name: Generate a new workspace with the selected Platform version
         shell: bash
         run: |
