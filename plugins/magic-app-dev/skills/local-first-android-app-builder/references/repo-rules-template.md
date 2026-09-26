@@ -3,6 +3,12 @@
 Use when creating or updating agent instructions or engineering rules. Preserve actual repository contracts and
 add only durable choices that would change an agent's decisions in this project.
 
+Keep cross-project collaboration preferences in the user's global instructions, reusable workflows in
+their owning Skills, and product contracts, source links and executable checks in the repository. Do not
+copy those layers into each project or turn task-specific corrections into permanent policy. Keep the
+entrypoint small enough to scan; use conditional links for detailed procedures rather than requiring
+every document before every edit. Length is a maintenance signal, not a line-count target.
+
 Useful project facts include:
 
 - Product purpose, accepted scope, and data or privacy boundaries.
