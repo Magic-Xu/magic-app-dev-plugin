@@ -18,9 +18,14 @@ Establish the accepted behavior, its owner, affected boundaries and the evidence
 Inspect nearby code and the current diff; consult governing requirements, engineering docs, decisions, and validation
 commands as needed. Reuse current task context.
 
-For a defect, fix the violated behavior or invariant within the requested scope. Ask when missing
-information changes product meaning, permissions, data handling or the deliverable; continue independent
-work while awaiting that answer. Otherwise make an evidence-backed decision and proceed.
+For a defect, separate the observed failure, expected behavior, proposed cause and requested remedy.
+Use a reproduction, trace or focused test to check the cause before committing to a remedy; if evidence
+is incomplete, state the uncertainty and choose the smallest useful diagnostic. When evidence contradicts
+the proposed cause, explain what it rules out and correct the approach within the authorized repair scope.
+Fix the violated behavior or invariant; do not change product requirements or weaken tests to fit a remedy.
+Discuss alternatives before a repair would change product meaning, permissions, data handling or the
+deliverable, and continue independent work. Routine restoration of accepted behavior needs no new
+product decision or whole-version review.
 
 A short route map is useful when ownership spans multiple boundaries or is unclear. For each concern,
 identify the owner, minimum change, dependency direction and proof. Keep this reasoning in the conversation

@@ -15,6 +15,13 @@ Resolve the user and job, shortest path to useful value, current-version inclusi
 failure/recovery behavior, and system capabilities. Distinguish evidence of demand from product hypotheses.
 For uncertain demand, use [需求调研](../indie-app-demand-research/SKILL.md) for the relevant question.
 
+Before committing to a feature or architecture, check the assumptions that could invalidate the user loop:
+evidence of the problem, platform feasibility, and relevant data or operating-cost limits. A requested
+technology or competitor feature is not evidence that it solves the problem. When a consequential premise
+is unsupported or contradicted, show the evidence and compare viable scopes or approaches with their
+tradeoffs. Prefer a small reversible check when it can resolve the uncertainty; discuss unresolved product
+choices before dependent design or implementation. Reuse accepted decisions unless new evidence changes them.
+
 Specify local storage, exports/transmissions, logging/telemetry, deletion, offline behavior and operating
 cost boundaries. Keep sensitive content out of logs. The core loop should not depend on ancillary ads,
 analytics or monitoring. Network-dependent features follow the accepted offline contract.
