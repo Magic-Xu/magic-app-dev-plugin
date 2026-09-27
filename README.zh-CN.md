@@ -25,7 +25,7 @@ codex plugin add magic-app-dev@magic-app-dev-plugin
 所有入口的显示名统一为 **Magic · 中文任务名**，便于在 Skill 列表中辨认。也可以直接用下表中的 `$<skill-id>` 指定。具体列表的搜索匹配方式由 Codex 客户端决定。
 
 - 不确定该用哪个：选 **Magic · 开发与迭代**，说明当前目标。
-- “上架前全盘审查这个版本，修复问题并清理过时内容”：选 **Magic · 版本发布审查与修复**。从实际发布基线核验累计需求、功能交互、架构实现和发布证据；仅要求审查时保持只读，不确定项汇总交给用户决定。
+- “上架前全盘审查这个版本，修复问题并清理过时内容”：选 **Magic · 版本发布审查与修复**。从实际发布基线核验累计需求、功能交互、架构实现及本地功能／性能证据；仅要求审查时保持只读；已授权修复须完成相关验证，仅将真实阻碍和必要的产品决策交给用户。
 - “上传 AAB、更新版本信息，看看商店要不要改”：选 **Magic · Google Play 发版**。首次上架和只更新商店也使用这个入口。
 - “看看这次改动上线后有没有效果”：选产品数据分析或稳定性分析，复用原来的指标、基线和观察窗口。
 
@@ -37,7 +37,7 @@ codex plugin add magic-app-dev@magic-app-dev-plugin
 | Magic · 开发与迭代 | `app-end-to-end-delivery` | 不确定用哪个 Skill 时从这里开始；按当前阶段衔接相关工作。 |
 | Magic · 真机验证 | `android-instrumentation-qa-guardrails` | 以可复现设备证据验证交互、系统能力和生命周期。 |
 | Magic · 设备常亮 | `android-device-keep-awake` | 仅在明确要求时，让指定 Android 设备在开发任务中常亮并可恢复。 |
-| Magic · 版本发布审查与修复 | `app-release-review` | 上架前核验累计需求、跨功能冲突和实现，按授权修复、清理并验证发布条件；也支持明确限定范围的检查。 |
+| Magic · 版本发布审查与修复 | `app-release-review` | 上架前核验累计需求、跨功能冲突和实现，按授权修复、清理并完成本地验证；正式包与 Play 分发由发版流程负责。 |
 | Magic · 合并主干 | `github-pr-mainline-release` | 按授权把已验收改动经适用 PR/CI 门禁合入主干，同步并精确清理。 |
 | Magic · Google Play 发版 | `google-play-release` | 首次上架、AAB 更新或商店单独更新；评估无需/局部/全面刷新，保存核验后交给用户送审。 |
 | Magic · 产品数据分析 | `app-product-analytics` | 分析获客、留存、漏斗和变现，支持迭代效果验证及项目约定的报告位置。 |

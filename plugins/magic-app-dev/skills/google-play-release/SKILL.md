@@ -12,6 +12,11 @@ Deliver a verified release draft, any approved store changes, and the exact rema
 For a store-only request, run the assessment and refresh path without building or uploading a new binary.
 For a supplied AAB, establish its identity and evidence before deciding whether another build is needed.
 
+This skill owns formal release versioning, signed distributable builds, final artifact checks and
+Play-dependent acceptance/distribution within the authorized scope. Reuse the engineering review's source,
+functional and local performance evidence instead of restarting it. Local performance measurement does
+not require a Play-installed app; distinguish it from signing, account eligibility and store-delivery checks.
+
 The default endpoint is **before review submission and before rollout/publication on every track**.
 The owner reviews changed store design/copy and performs final submission/publication. A request to
 prepare and upload a release covers establishing and pushing its release branch to the configured project
