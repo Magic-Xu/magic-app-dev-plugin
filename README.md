@@ -25,7 +25,7 @@ Start a new Codex task after installation or updating to load the current plugin
 All display names use **Magic · 中文任务名**. Invoke the English IDs listed below as `$<skill-id>`. Picker search matching is controlled by the Codex client.
 
 - Start with **Magic · 开发与迭代** when you do not know which specialist fits.
-- Use **Magic · 版本发布审查与修复** before Google Play release to review cumulative requirements, feature interactions, architecture, implementation and release evidence. Ask for review and repair to fix confirmed in-scope defects and remove proven obsolete content; review-only requests remain read-only.
+- Use **Magic · 版本发布审查与修复** before Google Play release to review cumulative requirements, feature interactions, architecture, implementation and local functional/performance evidence. Ask for review and repair to fix confirmed in-scope defects and remove proven obsolete content; review-only requests remain read-only.
 - Use **Magic · Google Play 发版** for AAB uploads, version notes, first launch or store-only changes. Version updates assess whether the store needs no, partial or full refresh.
 - Use product or stability analysis to verify a shipped iteration against its original metric, baseline and observation window.
 
@@ -37,7 +37,7 @@ All display names use **Magic · 中文任务名**. Invoke the English IDs liste
 | Magic · 开发与迭代 | `app-end-to-end-delivery` | Start here when the stage or specialist is unclear; coordinate only the requested lifecycle work. |
 | Magic · 真机验证 | `android-instrumentation-qa-guardrails` | Prove Android interactions, system boundaries and lifecycle behavior with reproducible evidence. |
 | Magic · 设备常亮 | `android-device-keep-awake` | Keep a specified device awake only when explicitly requested; preserve restoration state. |
-| Magic · 版本发布审查与修复 | `app-release-review` | Review the whole release, reconcile requirements and implementation, repair authorized defects and verify readiness; also supports explicitly scoped checks. |
+| Magic · 版本发布审查与修复 | `app-release-review` | Review the whole release, reconcile requirements and implementation, repair authorized defects and verify engineering readiness; formal packages and Play distribution belong to the release workflow. |
 | Magic · 合并主干 | `github-pr-mainline-release` | Integrate accepted work through applicable PR/CI gates, synchronize mainline and clean up precisely. |
 | Magic · Google Play 发版 | `google-play-release` | Prepare first launch, AAB updates or store-only changes; assess None/Partial/Full refresh and hand off verified drafts. |
 | Magic · 产品数据分析 | `app-product-analytics` | Analyze acquisition, retention, funnels and monetization, including iteration outcomes and configured report delivery. |

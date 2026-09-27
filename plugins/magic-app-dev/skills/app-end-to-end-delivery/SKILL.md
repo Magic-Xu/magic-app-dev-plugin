@@ -32,7 +32,7 @@ asking at every step.
 | Create a new Android workspace | [创建项目](../android-app-factory/SKILL.md) | Validated paired repositories; generated shell is not a finished product |
 | Implement an accepted feature or fix | [Implementation delivery](references/implementation-delivery.md) | Correctly owned changes and relevant proof |
 | Prove Android UI, system or lifecycle behavior | [真机验证](../android-instrumentation-qa-guardrails/SKILL.md) | Reproducible device evidence and honest coverage gaps |
-| Review a release, repair confirmed defects, or check a scoped change/boundary | [版本发布审查与修复](../app-release-review/SKILL.md) | Accepted behavior reconciled with implementation, authorized repairs and release evidence; scoped checks stay scoped |
+| Review a release, repair confirmed defects, or check a scoped change/boundary | [版本发布审查与修复](../app-release-review/SKILL.md) | Accepted behavior reconciled with implementation, authorized repairs and local functional/performance evidence; formal artifact and Play acceptance route to release preparation |
 | Integrate accepted code, when requested | [合并主干](../github-pr-mainline-release/SKILL.md) | Verified mainline integration and scoped cleanup |
 | First Play launch, version update, or store-only refresh | [Google Play 发版](../google-play-release/SKILL.md) | Verified Console draft; final submission/publication remains owner-controlled by default |
 | Understand usage, conversion or revenue | [产品数据分析](../app-product-analytics/SKILL.md) | Decision supported by comparable product metrics |

@@ -97,6 +97,30 @@ documentation is not automatically current because it calls itself authoritative
 to match accidental behavior, nor restore obsolete behavior solely to satisfy an old paragraph. Preserve
 project approval rules and ask when the conflict cannot be resolved from authoritative evidence.
 
+## Attribute Findings Before Choosing A Repair
+
+Separate discovery from introduction. Compare changes in validation coverage and conditions with the
+implementation history. Record the effective inputs, configuration and environment before comparing a
+baseline and candidate; the same script can exercise different behavior when defaults or retained state
+change. Where relevant, use controlled comparisons to distinguish an existing defect from changed exposure.
+Distinguish pre-existing limitations, incomplete new capability, newly introduced regressions and unknown
+origin. Identify previously documented cases and state what earlier checks actually covered.
+
+A correlation or reproduction on an older version does not by itself identify the implementation cause.
+Trace the relevant ownership and execution path; use a focused diagnostic that separates the remaining
+plausible causes when it would change the repair. Do not present a list of suspected causes as completed
+diagnosis while that evidence is obtainable. State residual uncertainty when evidence cannot resolve it.
+
+Judge the observed consequence against the project's accepted requirements and constraints. A failed
+check is evidence to interpret, not an automatic product obligation or severity decision. Keep product
+policies, domain-specific quality criteria and concrete regression cases in the project's own sources;
+read the relevant ones for this review rather than accumulating them in the shared skill.
+
+Recommend a concrete response and assess its benefit, affected existing behavior and possible regressions.
+Do not sacrifice normal workflows or accepted quality to optimize an isolated case or metric. Choose
+verification from the actual impact; preserve contrary evidence and state uncertainty. Product trade-offs
+that change accepted behavior follow the project's decision process, rather than being hidden in a fix.
+
 ## Inspect Both Directions
 
 - **Requirement to implementation:** Follow the real entry through state transitions, business rules,
@@ -122,7 +146,3 @@ Exercise relevant orderings: A then B versus B then A, overlapping operations, l
 replacement, cancellation/retry, navigation/backgrounding, and recreation or upgrade during a critical flow.
 Verify which version of settings/input an operation consumes and who may commit its result. Compare preview
 and final output when both claim the same business semantics.
-
-Examples of useful probes include changing input while analysis runs, saving while another entry imports
-media, settings updates during export, and restoration after an external write. Choose only scenarios that
-apply to the target product; these are review prompts, not required features or assumed existing defects.

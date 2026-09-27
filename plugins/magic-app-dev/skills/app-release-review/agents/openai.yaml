@@ -1,7 +1,7 @@
 interface:
   display_name: "Magic · 版本发布审查与修复"
   short_description: "发布前核验新增与保留能力，推导回归场景并验证证据，按授权修复。"
-  default_prompt: "使用 $app-release-review，在 Google Play 上架前全盘审查本版本，修复范围内有证据的问题并清理确定过时的内容，验证后给出发布判断，将不确定项汇总让我决定。"
+  default_prompt: "使用 $app-release-review，全盘审查本版本，修复范围内有证据的问题并清理确定过时的内容，完成相关本地验证；按问题现象、引入原因、解决方案和影响范围汇报审查结论，保护常规使用体验。正式打包与 Play 分发交给发版流程。"
 
 policy:
   allow_implicit_invocation: true

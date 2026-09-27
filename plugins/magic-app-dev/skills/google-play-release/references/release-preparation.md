@@ -27,6 +27,23 @@ resuming a saved draft still requires a verified formal branch tied to its sourc
    the project's existing archive tool. Validate the exact artifact to be uploaded. If it is rebuilt,
    re-establish its identity and any checks affected by the change.
 
+## Verify A Newly Added Update Check
+
+Do not require two public production releases. Google documents testing with internal app sharing: install
+a lower-versionCode build that already contains the update-check feature through its sharing link, upload
+a compatible higher-versionCode build, open the higher build's sharing link without installing it, then
+reopen the lower build to query update availability. Recheck current [official testing guidance](https://developer.android.com/guide/playcore/in-app-updates/test)
+for package, signing and account eligibility. Keep both test builds inside the project's release/version
+policy; do not bump a feature branch or replace an existing user's differently signed install.
+
+Test only the product's accepted behavior. An availability check plus an external store link does not
+require implementing or validating Play's in-app download/install UI. Use the sharing setup to verify the
+real availability query and test the app's link/return behavior; if end-to-end updating through the normal
+store listing is required, use an authorized internal/closed test track with both eligible builds, since
+sharing-link visibility is not proof of normal-listing distribution. Local controlled responses separately
+cover unavailable/current/available, retry and navigation logic. Neither method authorizes upload or tester
+distribution merely because a review identified the scenario.
+
 ## Localized Version Notes
 
 Write concise user-facing changes from the accepted release delta. Do not copy commit logs, announce
