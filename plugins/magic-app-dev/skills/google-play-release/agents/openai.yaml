@@ -1,4 +1,4 @@
 interface:
   display_name: "Magic · Google Play 发版"
-  short_description: "准备首次上架或 AAB 更新，按需刷新商店内容，停在用户送审与发布前。"
-  default_prompt: "使用 $google-play-release，准备这次 Google Play 发布，核验 AAB、版本说明和商店更新范围，保存草稿并停在我送审之前。"
+  short_description: "给出版本号即可准备 Google Play 发布，按需更新商店，停在送审页由你提交。"
+  default_prompt: "使用 $google-play-release，按我给出的版本号完成发布准备，并停在送审页由我亲自送审。"

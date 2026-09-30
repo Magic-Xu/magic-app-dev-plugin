@@ -1,6 +1,6 @@
 ---
 name: google-play-release
-description: Google Play 首次上架、AAB 版本更新、商店截图与描述更新及草稿续办；核验包体与多语言内容，评估无需/局部/全面刷新，默认停在用户送审和发布之前。
+description: Google Play 发版与商店更新；显式唤起并给出版本号即可准备发布分支、包体、多语言说明与草稿，默认停在送审页，由用户亲自送审和发布。
 ---
 
 # Google Play Release
@@ -11,6 +11,16 @@ One entry point prepares a first launch, version update, or store-only change an
 Deliver a verified release draft, any approved store changes, and the exact remaining owner action.
 For a store-only request, run the assessment and refresh path without building or uploading a new binary.
 For a supplied AAB, establish its identity and evidence before deciding whether another build is needed.
+
+**Version-only invocation:** When the user explicitly invokes this skill and supplies a version
+(for example, `$google-play-release 2.5.0`), treat it as a request to complete release preparation for
+that version in the current project. Resolve the app, accepted source, target track and release policy
+from the project and current Console state; reuse established choices. This authorizes creating or
+resuming and pushing the formal release branch, versioning, building, validating, archiving, uploading,
+and saving the release draft. Do not ask the user to repeat these steps or the default stop boundary.
+Keep changed store design/copy behind the review gate below; clarify only a material ambiguity that
+cannot be resolved from the project or current state. An automatic skill match or a version mentioned
+in a read-only question does not carry this write authorization.
 
 This skill owns formal release versioning, signed distributable builds, final artifact checks and
 Play-dependent acceptance/distribution within the authorized scope. Reuse the engineering review's source,
@@ -130,6 +140,12 @@ remaining checks, and the precise owner action/link. For binary releases, includ
 verified remote SHA, packaged source SHA and final working branch/worktree; name any unresolved branch gate.
 Present updated copy/design when review is needed.
 Do not label a draft with unresolved required checks as ready for submission.
+
+For a completed release preparation, leave the authorized Console session on the saved release's
+Publishing overview or review-submission page. Verify the intended pending changes and available owner
+submission action, then hand off without activating it. The owner personally submits for review and
+publishes; reaching an upload screen or saving an unverified draft is not this endpoint. If access or a
+required gate prevents reaching it, preserve the actual draft and identify the precise remaining step.
 
 Keep binary and store status independent: prepared, saved, submitted, approved and live are distinct facts.
 Record evidence and observation time; distinguish owner-reported submission from a Console observation.
