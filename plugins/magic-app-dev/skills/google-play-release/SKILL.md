@@ -22,10 +22,14 @@ Keep changed store design/copy behind the review gate below; clarify only a mate
 cannot be resolved from the project or current state. An automatic skill match or a version mentioned
 in a read-only question does not carry this write authorization.
 
-This skill owns formal release versioning, signed distributable builds, final artifact checks and
-Play-dependent acceptance/distribution within the authorized scope. Reuse the engineering review's source,
-functional and local performance evidence instead of restarting it. Local performance measurement does
-not require a Play-installed app; distinguish it from signing, account eligibility and store-delivery checks.
+This skill owns formal release versioning, signed distributable builds, artifact verification and Console
+preparation. Routine release readiness uses valid local-package functional/device/performance evidence;
+reuse the engineering review's results for unchanged inputs instead of reinstalling or repeating them.
+Installing through Google Play and rechecking startup, purchase or restore are not default submission gates.
+Use local packages when further app testing is needed. Treat real Play delivery, account eligibility and
+purchase/update queries as separate checks only when explicitly included in the agreed acceptance scope;
+local evidence does not establish those external results. Missing optional Play checks must not block an
+otherwise verified draft. Test distribution still needs its own authorization.
 
 The default endpoint is **before review submission and before rollout/publication on every track**.
 The owner reviews changed store design/copy and performs final submission/publication. A request to
