@@ -13,12 +13,16 @@ resuming a saved draft still requires a verified formal branch tied to its sourc
 2. Reuse configured upload signing and production build configuration. Never print passwords, place keys
    in artifacts, reset signing or create replacement keys. Confirm debug/test settings are absent from
    the release variant, including ad IDs, billing overrides and backend endpoints where applicable.
-3. Run the repository's mandatory release checks and relevant unit/integration/device regression. Reuse
-   current evidence for unchanged inputs. Verify the packaged release path using the project's AAB/device
-   tooling; successful compilation alone does not prove installation or user flows. Record unavailable
-   device/OS coverage honestly. Play purchase behavior may require an authorized testing-track build;
-   local sideloading is not equivalent evidence. Distributing that test build requires existing explicit
-   authorization, since the default endpoint excludes publication on test tracks too.
+3. Use local packages for app validation and reuse valid unit/integration/device/performance evidence
+   for unchanged code and configuration. Compare the tested package with the candidate; run only checks
+   affected by meaningful differences, including packaging-sensitive behavior where necessary. Successful
+   compilation alone is not functional evidence. Record the tested variant and device/OS coverage honestly.
+   Do not add a Play installation, startup, purchase/restore or internal-track round trip as a routine
+   submission prerequisite. Routine preparation does not replace or uninstall the user's existing store
+   installation; use the project's isolated local test package when additional device testing is needed.
+   A real Play-channel check is a separate task when explicitly required by the agreed acceptance scope.
+   Local controlled responses cannot prove real purchases or store delivery; report that boundary without
+   blocking on optional checks. Publishing to a test track requires explicit distribution authorization.
 4. Inspect the final bundle's package, version, SDK/variant and upload signature with the project's tools
    (for example bundletool, jarsigner and its expected upload certificate). The upload key and Google Play
    app-signing key can differ; compare the appropriate certificate. Include mapping/native symbols from
@@ -27,7 +31,11 @@ resuming a saved draft still requires a verified formal branch tied to its sourc
    the project's existing archive tool. Validate the exact artifact to be uploaded. If it is rebuilt,
    re-establish its identity and any checks affected by the change.
 
-## Verify A Newly Added Update Check
+## Optional Real Play Update Verification
+
+For routine preparation, reuse local tests of update states, retries, store navigation and return behavior.
+Only perform the following Play-channel procedure when real update availability is explicitly required by
+the agreed acceptance scope. It is not a default release gate, including for a newly added update control.
 
 Do not require two public production releases. Google documents testing with internal app sharing: install
 a lower-versionCode build that already contains the update-check feature through its sharing link, upload
